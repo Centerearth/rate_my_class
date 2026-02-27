@@ -1,0 +1,6 @@
+{
+  "cs111": "CS 111 is a 3-credit course dealing with an introduction to computer science. The course is taught primarily in Python but will cover complex topics such as iteration, recursion, and interpreters.",
+  "cs180": "CS 180 is a 3-credit course with an online section and some in-person sections. Students learn the fundamentals of data science and machine learning through programming in python.",
+  "cs235": "CS 235 is a 3-credit course with an online section and some in-person sections. Students learn the data structures and how to implement them in C++.",
+  "cs260": "CS 260 is a 3-credit course with one online section and one in-person section. Students learn the fundamentals of web programming through HTML, CSS, Javastrap, React, and other related technologies."
+}
