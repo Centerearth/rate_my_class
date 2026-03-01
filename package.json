@@ -2,13 +2,13 @@
   "name": "simon-websocket",
   "version": "1.0.0",
   "description": "This demonstrates using WebSocket for peer to peer communication.",
-  "main": "index.js",
+  "main": "backend/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node index.js"
+    "start": "node backend/index.js"
   },
   "repository": {
     "type": "git",
