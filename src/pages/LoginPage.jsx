@@ -1,37 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { postAuthRequest, logout } from '../services/api.js';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   async function loginUser() {
-    loginOrCreate(`/api/auth/login`);
-  }
-
-  async function logout() {
-    fetch(`/api/auth/logout`, {
-      method: 'delete',
-    }).then(() => (window.location.href = '/login'));
-  }
-
-  async function loginOrCreate(endpoint) {
-    const userEmail = document.querySelector('#email')?.value;
-    const password = document.querySelector('#password')?.value;
-    const response = await fetch(endpoint, {
-      method: 'post',
-      body: JSON.stringify({ email: userEmail, password: password }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-    const body = await response.json();
-
-    if (response?.status === 200) {
-      localStorage.setItem('userEmail', userEmail);
+    try {
+      await postAuthRequest('/api/auth/login', { email, password });
+      localStorage.setItem('userEmail', email);
       window.location.href = '/review-maker';
-    } else {
-      alert(`⚠ Error: ${body.msg}`);
+    } catch (error) {
+      alert(`⚠ Error: ${error.message}`);
     }
   }
+
+
 
   return (
     <Layout>
@@ -39,11 +25,23 @@ export default function LoginPage() {
         <h1>Login</h1>
         <form id="myForm">
           <div className="form-outline mb-4">
-            <input type="email" id="email" className="form-control" />
+            <input
+              type="email"
+              id="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <label className="form-label" htmlFor="email">Email address</label>
           </div>
           <div className="form-outline mb-4">
-            <input type="password" id="password" className="form-control" />
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <label className="form-label" htmlFor="password">Password</label>
           </div>
           <button type="button" className="btn btn-primary" onClick={loginUser}>

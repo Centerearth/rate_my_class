@@ -7,6 +7,7 @@ export default function ClassReviewPage() {
   const { classNum } = useParams();
   const [reviews, setReviews] = React.useState([]);
   const description = classDescriptions[classNum];
+  const userName = localStorage.getItem('userName');
 
   React.useEffect(() => {
     async function loadReviews() {
@@ -58,7 +59,7 @@ export default function ClassReviewPage() {
             </tr>
           </thead>
           <tbody id="reviewTable">
-            {reviews.length ? (
+            {reviews.length > 0 ? (
               reviews.map((review, i) => (
                 <tr key={i}>
                   <td>{review.name}</td>
@@ -69,7 +70,7 @@ export default function ClassReviewPage() {
               ))
             ) : (
               <tr>
-                <td colSpan="4">Please login to read and post reviews!</td>
+                <td colSpan="4">{userName ? 'No reviews posted yet.' : 'Please login to read and post reviews!'}</td>
               </tr>
             )}
           </tbody>

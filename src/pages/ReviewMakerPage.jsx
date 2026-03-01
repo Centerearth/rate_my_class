@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { postReview } from '../services/api.js';
 
 export default function ReviewMakerPage() {
+  const navigate = useNavigate();
   const [socket, setSocket] = React.useState(null);
   const [messages, setMessages] = React.useState([]);
+  const [userName, setUserName] = React.useState('');
+  const [grade, setGrade] = React.useState('A');
+  const [classNum, setClassNum] = React.useState('cs260');
+  const [reviewContent, setReviewContent] = React.useState('');
 
   React.useEffect(() => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
@@ -31,9 +38,7 @@ export default function ReviewMakerPage() {
 
   function displayMsg(cls, from, msg) {
     setMessages((prevMessages) => [
-      <div className="event" key={Date.now()}>
-        <span className={`${cls}-event`}>{from}</span> {msg}
-      </div>,
+      { id: Date.now(), cls, from, msg },
       ...prevMessages,
     ]);
   }
@@ -48,21 +53,12 @@ export default function ReviewMakerPage() {
   }
 
   async function saveReview() {
-    const userName = document.querySelector("#nameId")?.value;
-    const letterGrade = document.querySelector('#gradeId')?.value;
-    const classNum = document.querySelector('#classId')?.value;
-    const reviewContent = document.querySelector('#reviewId')?.value;
     const date = new Date().toLocaleDateString();
-    const newReview = { name: userName, grade: letterGrade, date: date, class:classNum, review:reviewContent};
-    const response = await fetch(`/api/review/${classNum}`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(newReview),
-    });
-    const reviews = await response.json();
+    const newReview = { name: userName, grade: grade, date: date, class: classNum, review: reviewContent };
+    const reviews = await postReview(classNum, newReview);
     localStorage.setItem('reviews', JSON.stringify(reviews));
     broadcastEvent(classNum, {});
-    window.location.href = `/${classNum}`;
+    navigate(`/${classNum}`);
   }
 
   return (
@@ -72,12 +68,18 @@ export default function ReviewMakerPage() {
         <form id="reviewForm">
           <div className="form-group">
             <label htmlFor="nameId">First Name</label>
-            <textarea className="form-control" id="nameId" rows="1"></textarea>
+            <input
+              type="text"
+              className="form-control"
+              id="nameId"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
           </div>
           <hr />
           <div className="form-group">
             <label htmlFor="gradeId">Please Select Your Grade</label>
-            <select className="form-control" id="gradeId">
+            <select className="form-control" id="gradeId" value={grade} onChange={(e) => setGrade(e.target.value)}>
               <option>A</option>
               <option>A-</option>
               <option>B+</option>
@@ -95,17 +97,34 @@ export default function ReviewMakerPage() {
           <hr />
           <div className="form-group">
             <label htmlFor="classId">Please Select the Class</label>
-            <select className="form-control" id="classId">
+            <select className="form-control" id="classId" value={classNum} onChange={(e) => setClassNum(e.target.value)}>
               <option value="cs260">CS 260</option>
+              <option value="cs235">CS 235</option>
               <option value="cs111">CS 111</option>
               <option value="cs180">CS 180</option>
-              <option value="cs235">CS 235</option>
+              <option value="math290">MATH 290</option>
+              <option value="acc200">ACC 200</option>
+              <option value="acc241">ACC 241</option>
+              <option value="acc300">ACC 300</option>
+              <option value="acc301">ACC 301</option>
+              <option value="acc310">ACC 310</option>
+              <option value="acc329">ACC 329</option>
+              <option value="acc401">ACC 401</option>
+              <option value="acc403">ACC 403</option>
+              <option value="acc405">ACC 405</option>
+              <option value="acc406">ACC 406</option>
             </select>
           </div>
           <hr />
           <div className="form-group">
             <label htmlFor="reviewId">Leave Your Review Here</label>
-            <textarea className="form-control" id="reviewId" rows="4"></textarea>
+            <textarea
+              className="form-control"
+              id="reviewId"
+              rows="4"
+              value={reviewContent}
+              onChange={(e) => setReviewContent(e.target.value)}
+            ></textarea>
           </div>
           <hr />
           <button type="button" className="btn btn-primary btn-block mb-4" onClick={saveReview}>
@@ -113,7 +132,13 @@ export default function ReviewMakerPage() {
           </button>
         </form>
       </div>
-      <div id="player-messages">{messages}</div>
+      <div id="player-messages">
+        {messages.map((m) => (
+          <div className="event" key={m.id}>
+            <span className={`${m.cls}-event`}>{m.from}</span> {m.msg}
+          </div>
+        ))}
+      </div>
     </Layout>
   );
 }
