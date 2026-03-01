@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const { PeerProxy } = require('./peerProxy.js');
 const authRouter = require('./modules/auth.js').router;
 const reviewsRouter = require('./modules/reviews.js');
 const { secureApiRouter } = require('./modules/auth.js');
@@ -29,5 +28,3 @@ app.use((_req, res) => {
 const httpService = app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
-
-new PeerProxy(httpService);
