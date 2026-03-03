@@ -1,5 +1,5 @@
 {
-  "name": "simon-websocket",
+  "name": "rate-my-class-websocket",
   "version": "1.0.0",
   "description": "This demonstrates using WebSocket for peer to peer communication.",
   "main": "backend/index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webprogramming260/simon-websocket.git"
+    "url": "git+https://github.com/Centerearth/startup"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/webprogramming260/simon-websocket/issues"
+    "url": "https://github.com/Centerearth/startup"
   },
-  "homepage": "https://github.com/webprogramming260/simon-websocket#readme",
+  "homepage": "https://github.com/Centerearth/startup#readme",
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.4",
     "bcrypt": "^5.1.0",
