@@ -1,36 +1,58 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { logout, getUser } from '../services/api.js';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState(null);
+
+  useEffect(() => {
+    getUser().then((data) => {
+        if (data && data.email) setUserEmail(data.email);
+      })
+      .catch(() => setUserEmail(null));
+  }, []);
+
+  async function handleLogout() {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (error) {
+      alert(`⚠ Error during logout: ${error.message}`);
+    }
+  }
+
   return (
-    <header className="container-fluid">
-      <nav className="navbar navbar-dark">
+    <header className="container-fluid bg-primary">
+      <nav className="navbar navbar-dark align-items-center">
         <NavLink className="navbar-brand" to="/">
           Rate My Class
         </NavLink>
-        <menu className="navbar-nav">
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/">
-              Home
+        <NavLink className="nav-link text-white-50 px-3" to="/">
+          Home
+        </NavLink>
+        <NavLink className="nav-link text-white-50 px-3" to="/about">
+          About
+        </NavLink>
+        {userEmail ? (
+          <>
+            <NavLink className="nav-link text-white-50 ms-auto px-3 position-relative" to="/review-maker">
+              Post a Review
             </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/about">
-              About
+            <NavLink className="nav-link text-white-50 px-3" to="/account">
+              Account
             </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/login">
-              Login
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/review-maker">
-              Post A Review
-            </NavLink>
-          </li>
-        </menu>
+            <button className="btn btn-link nav-link text-white-50 px-3" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <NavLink className="nav-link text-white-50 ms-auto px-3" to="/login">
+            Login
+          </NavLink>
+        )}
         <img className="navbar-pic" src="/Y.png" width="48" height="31" alt="" />
+   
       </nav>
     </header>
   );

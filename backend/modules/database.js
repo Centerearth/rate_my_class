@@ -25,6 +25,8 @@ function getUserByToken(token) {
 }
 
 async function createUser(name, email, password) {
+  console.log(`[DB] Creating user record for ${email}`);
+  
   // Hash the password before we insert it into the database
   const passwordHash = await bcrypt.hash(password, 10);
 
@@ -48,10 +50,15 @@ function getReview(classId) {
   return cursor.toArray();
 }
 
+function deleteUser(email) {
+  return userCollection.deleteOne({ email: String(email) });
+}
+
 module.exports = {
   getUser,
   getUserByToken,
   createUser,
   addReview,
   getReview,
+  deleteUser,
 };

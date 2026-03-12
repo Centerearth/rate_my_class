@@ -66,12 +66,23 @@ secureApiRouter.use(async (req, res, next) => {
   const authToken = req.cookies[authCookieName];
   const user = await DB.getUserByToken(authToken);
   if (user) {
+    req.user = user;
     next();
   } else {
+    console.log(`[AUTH] Unauthorized access attempt to ${req.originalUrl}`);
     res.status(401).send({ msg: 'Unauthorized' });
   }
 });
 
+secureApiRouter.get('/auth/me', (req, res) => {
+  res.send({ email: req.user.email, name: req.user.name });
+});
+
+secureApiRouter.delete('/auth/account', async (req, res) => {
+  await DB.deleteUser(req.user.email);
+  res.clearCookie(authCookieName);
+  res.status(204).end();
+});
 
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {

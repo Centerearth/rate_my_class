@@ -24,10 +24,17 @@ export async function postAuthRequest(endpoint, data) {
 }
 
 export async function logout() {
-  localStorage.removeItem('userEmail');
-  fetch(`/api/auth/logout`, {
+  await fetch(`/api/auth/logout`, {
     method: 'delete',
-  }).then(() => (window.location.href = '/login'));
+  });
+}
+
+export async function getUser() {
+  const response = await fetch('/api/auth/me');
+  if (response.ok) {
+    return response.json();
+  }
+  return null;
 }
 
 export async function postReview(classNum, review) {
@@ -37,4 +44,11 @@ export async function postReview(classNum, review) {
     body: JSON.stringify(review),
   });
   return await response.json();
+}
+
+export async function deleteAccount() {
+  const response = await fetch('/api/auth/account', { method: 'DELETE' });
+  if (!response.ok) {
+    throw new Error('Failed to delete account');
+  }
 }
