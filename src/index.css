@@ -1,40 +1,31 @@
 body {
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   min-width: 375px;
 }
 
-header {
-  flex: 0 0 80px;
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 main {
-  flex: 1 calc(100vh - 110px);
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 footer {
   flex: 0 30px;
 }
 
-menu {
-  flex: 1;
-  display: flex;
-  /*  overwrite Bootstrap so the menu does not wrap */
-  flex-direction: row !important;
-  list-style: none;
-}
 
 .navbar-brand {
-  margin-top: .5em;
   padding-left: 0.3em;
-}
-
-.navbar-pic {
-  margin-right: 1em;
 }
 
 menu .nav-item {
@@ -65,6 +56,11 @@ footer a {
   flex-direction: column;
   align-items: left;
   justify-content: space-around;
+}
+
+#account-main {
+  width: 100%;
+  text-align: left;
 }
 
 #login-main {
@@ -103,3 +99,10 @@ td {
   max-width: 40vw;
 }
 
+.nav-link.active {
+  color: #fff !important;
+}
+
+.nav-link:hover {
+  color: #fff !important;
+}
