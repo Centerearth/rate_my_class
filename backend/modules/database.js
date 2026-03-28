@@ -1,6 +1,8 @@
 const { MongoClient } = require('mongodb');
-const bcrypt = require('bcrypt');
-const uuid = require('uuid');
+const crypto = require('crypto');
+const { promisify } = require('util');
+
+const scrypt = promisify(crypto.scrypt);
 
 const userName = process.env.MONGOUSER;
 const password = process.env.MONGOPASSWORD;
@@ -24,17 +26,26 @@ function getUserByToken(token) {
   return userCollection.findOne({ token: token });
 }
 
+async function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = (await scrypt(password, salt, 64)).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+async function verifyPassword(password, stored) {
+  const [salt, hash] = stored.split(':');
+  const hashToVerify = (await scrypt(password, salt, 64)).toString('hex');
+  return hash === hashToVerify;
+}
+
 async function createUser(name, email, password) {
   console.log(`[DB] Creating user record for ${email}`);
-  
-  // Hash the password before we insert it into the database
-  const passwordHash = await bcrypt.hash(password, 10);
 
   const user = {
     name: name,
     email: email,
-    password: passwordHash,
-    token: uuid.v4(),
+    password: await hashPassword(password),
+    token: crypto.randomUUID(),
   };
   await userCollection.insertOne(user);
 
@@ -58,6 +69,7 @@ module.exports = {
   getUser,
   getUserByToken,
   createUser,
+  verifyPassword,
   addReview,
   getReview,
   deleteUser,

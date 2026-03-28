@@ -1,6 +1,5 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const bcrypt = require('bcrypt');
 const DB = require('./database.js');
 
 const authCookieName = 'token';
@@ -32,7 +31,7 @@ router.post('/auth/create', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
   const user = await DB.getUser(req.body.email);
   if (user) {
-    if (await bcrypt.compare(req.body.password, user.password)) {
+    if (await DB.verifyPassword(req.body.password, user.password)) {
       setAuthCookie(res, user.token);
       res.send({ id: user._id });
       return;
