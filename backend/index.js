@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const authRouter = require('./modules/auth.js').router;
-const reviewsRouter = require('./modules/reviews.js');
-const { secureApiRouter } = require('./modules/auth.js');
+const { router: authRouter, secureApiRouter } = require('./modules/auth.js');
+const { publicRouter: reviewsPublicRouter, secureRouter: reviewsSecureRouter } = require('./modules/reviews.js');
 
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 3000;
@@ -18,7 +17,8 @@ app.use(express.static('dist'));
 
 app.use('/api', authRouter);
 app.use('/api', secureApiRouter);
-app.use('/api', reviewsRouter);
+secureApiRouter.use(reviewsSecureRouter);
+app.use('/api', reviewsPublicRouter);
 
 
 // Default error handler

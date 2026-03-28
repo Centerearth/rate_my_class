@@ -5,9 +5,13 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
-    getUser().then(setUser).catch(() => setUser(null));
+    getUser()
+      .then(setUser)
+      .catch(() => setUser(null))
+      .finally(() => setIsAuthLoading(false));
   }, []);
 
   async function login(email, password) {
@@ -32,7 +36,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, clearUser }}>
+    <AuthContext.Provider value={{ user, isAuthLoading, login, signup, logout, clearUser }}>
       {children}
     </AuthContext.Provider>
   );
