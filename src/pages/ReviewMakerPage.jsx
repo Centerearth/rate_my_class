@@ -2,17 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { postReview } from '../services/api.js';
+import { useAuth } from '../context/AuthContext';
 
 export default function ReviewMakerPage() {
     const navigate = useNavigate();
-    const [userName, setUserName] = React.useState('');
+    const { user } = useAuth();
     const [grade, setGrade] = React.useState('A');
     const [classNum, setClassNum] = React.useState('cs260');
     const [reviewContent, setReviewContent] = React.useState('');
 
     async function saveReview() {
         const date = new Date().toLocaleDateString();
-        const newReview = { name: userName, grade: grade, date: date, class: classNum, review: reviewContent };
+        const newReview = { name: user.name, grade: grade, date: date, class: classNum, review: reviewContent };
         const reviews = await postReview(classNum, newReview);
         localStorage.setItem('reviews', JSON.stringify(reviews));
         navigate(`/${classNum}`);
@@ -23,17 +24,6 @@ export default function ReviewMakerPage() {
             <div className="col-lg-12 col-xl-11">
                 <hr style={{ visibility: 'hidden' }} />
                 <form id="reviewForm">
-                    <div className="form-group">
-                        <label htmlFor="nameId">First Name</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="nameId"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                        />
-                    </div>
-                    <hr />
                     <div className="form-group">
                         <label htmlFor="gradeId">Please Select Your Grade</label>
                         <select className="form-control" id="gradeId" value={grade} onChange={(e) => setGrade(e.target.value)}>

@@ -1,17 +1,9 @@
-import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { logout, getUser } from '../services/api.js';
+import { useAuth } from '../context/AuthContext';
 
 export default function Header() {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState(null);
-
-  useEffect(() => {
-    getUser().then((data) => {
-        if (data && data.email) setUserEmail(data.email);
-      })
-      .catch(() => setUserEmail(null));
-  }, []);
+  const { user, logout } = useAuth();
 
   async function handleLogout() {
     try {
@@ -34,7 +26,7 @@ export default function Header() {
         <NavLink className="nav-link text-white-50 px-3" to="/about">
           About
         </NavLink>
-        {userEmail ? (
+        {user ? (
           <>
             <NavLink className="nav-link text-white-50 ms-auto px-3 position-relative" to="/review-maker">
               Post a Review

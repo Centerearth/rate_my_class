@@ -7,6 +7,7 @@ import ReviewMakerPage from './pages/ReviewMakerPage';
 import ClassReviewPage from './pages/ClassReviewPage';
 import AccountPage from './pages/AccountPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 const router = createBrowserRouter([
@@ -23,16 +24,21 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: '/account',
-    element: <AccountPage />,
-  },
-  {
     path: '/sign-up',
     element: <SignUpPage />,
   },
   {
-    path: '/review-maker',
-    element: <ReviewMakerPage />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/account',
+        element: <AccountPage />,
+      },
+      {
+        path: '/review-maker',
+        element: <ReviewMakerPage />,
+      },
+    ],
   },
   {
     path: '/:classNum',
