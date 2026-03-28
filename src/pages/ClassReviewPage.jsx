@@ -2,12 +2,17 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import classDescriptions from '../data/class-descriptions.json';
+import NotFoundPage from './NotFoundPage';
 
 export default function ClassReviewPage() {
   const { classNum } = useParams();
   const [reviews, setReviews] = React.useState([]);
   const description = classDescriptions[classNum];
   const userName = localStorage.getItem('userName');
+
+  if (!description) {
+    return <NotFoundPage />;
+  }
 
   React.useEffect(() => {
     async function loadReviews() {
