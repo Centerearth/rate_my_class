@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { postAuthRequest } from '../services/api.js';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +17,7 @@ export default function SignUpPage() {
     }
 
     try {
-      await postAuthRequest('/api/auth/create', { name: userName, email, password });
+      await signup(userName, email, password);
       navigate('/');
     } catch (error) {
       alert(`⚠ Error: ${error.message}`);

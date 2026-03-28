@@ -1,27 +1,18 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { getUser, deleteAccount as deleteAccountApi } from '../services/api';
+import { deleteAccount as deleteAccountApi } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function AccountPage() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const data = await getUser();
-        if (data) setUser(data);
-      } catch { /* ignore error, user remains null */ }
-    }
-    loadUser();
-  }, []);
+  const { user, clearUser } = useAuth();
 
   async function deleteAccount() {
     if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
 
     try {
       await deleteAccountApi();
+      clearUser();
       navigate('/');
     } catch (e) {
       alert(e.message);
