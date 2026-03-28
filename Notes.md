@@ -1,6 +1,6 @@
 Write unit tests
+replace bcrypt with crypto
 Change into a search bar
-Add more classes
 Add the option to add a new class with a new description - need to store it in the database?
 Make sure no ports are hardcoded
 Modernize the look, fix styling
