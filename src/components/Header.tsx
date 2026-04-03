@@ -10,7 +10,7 @@ export default function Header() {
       await logout();
       navigate('/login');
     } catch (error) {
-      alert(`⚠ Error during logout: ${error.message}`);
+      alert(`⚠ Error during logout: ${(error as Error).message}`);
     }
   }
 
@@ -44,7 +44,6 @@ export default function Header() {
           </NavLink>
         )}
         <img className="navbar-pic" src="/Y.png" width="48" height="31" alt="" />
-   
       </nav>
     </header>
   );

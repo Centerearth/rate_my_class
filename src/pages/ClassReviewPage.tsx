@@ -1,22 +1,23 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
-import classDescriptions from '../data/class-descriptions.json';
+import classDescriptionsJson from '../data/class-descriptions.json';
 import NotFoundPage from './NotFoundPage';
+import { Review } from '../services/api';
+
+const classDescriptions = classDescriptionsJson as Record<string, string>;
 
 export default function ClassReviewPage() {
-  const { classNum } = useParams();
-  const [reviews, setReviews] = React.useState([]);
-  const description = classDescriptions[classNum];
+  const { classNum } = useParams<{ classNum: string }>();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const description = classNum ? classDescriptions[classNum] : undefined;
   const userName = localStorage.getItem('userName');
 
-  if (!description) {
-    return <NotFoundPage />;
-  }
+  useEffect(() => {
+    if (!classNum) return;
 
-  React.useEffect(() => {
     async function loadReviews() {
-      let reviewsData = [];
+      let reviewsData: Review[] = [];
       try {
         const response = await fetch(`/api/review/${classNum}`);
         reviewsData = await response.json();
@@ -30,8 +31,13 @@ export default function ClassReviewPage() {
       }
       setReviews(reviewsData);
     }
+
     loadReviews();
   }, [classNum]);
+
+  if (!description) {
+    return <NotFoundPage />;
+  }
 
   return (
     <Layout>
@@ -39,14 +45,14 @@ export default function ClassReviewPage() {
         <div className="col">
           <div className="card" style={{ width: '20rem' }}>
             <div className="card-body">
-              <h5 className="card-title text-center">{classNum.toUpperCase()}</h5>
+              <h5 className="card-title text-center">{classNum!.toUpperCase()}</h5>
               <p className="card-text">{description}</p>
             </div>
           </div>
         </div>
         <div className="col">
           <div className="card" style={{ width: '50rem' }}>
-            <div className="card-header">{classNum.toUpperCase()}</div>
+            <div className="card-header">{classNum!.toUpperCase()}</div>
             <div className="card-body">
               {/* Add overall rating here */}
             </div>
@@ -75,7 +81,7 @@ export default function ClassReviewPage() {
               ))
             ) : (
               <tr>
-                <td colSpan="4">{userName ? 'No reviews posted yet.' : 'Please login to read and post reviews!'}</td>
+                <td colSpan={4}>{userName ? 'No reviews posted yet.' : 'Please login to read and post reviews!'}</td>
               </tr>
             )}
           </tbody>

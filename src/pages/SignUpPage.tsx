@@ -20,7 +20,7 @@ export default function SignUpPage() {
       await signup(userName, email, password);
       navigate('/');
     } catch (error) {
-      alert(`⚠ Error: ${error.message}`);
+      alert(`⚠ Error: ${(error as Error).message}`);
     }
   }
 
@@ -30,10 +30,7 @@ export default function SignUpPage() {
         <div className="card shadow-sm" style={{ width: '25rem' }}>
           <div className="card-body p-4">
             <h1 className="card-title text-center mb-4">Sign Up</h1>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              createUser();
-            }}>
+            <form onSubmit={(e) => { e.preventDefault(); createUser(); }}>
               <div className="form-floating mb-3">
                 <input
                   type="text"
@@ -71,9 +68,7 @@ export default function SignUpPage() {
                 Register
               </button>
               <div className="text-center mt-3 d-flex justify-content-center align-items-center">
-                <p className="mb-0 me-2">
-                  Already have an account?
-                </p>
+                <p className="mb-0 me-2">Already have an account?</p>
                 <button type="button" className="btn btn-primary" onClick={() => navigate('/login')}>
                   Login
                 </button>

@@ -1,54 +1,51 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const DB = require('./database.js');
+import express, { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
+import * as DB from './database';
+import { DBUser } from './database';
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: DBUser;
+  }
+}
 
 const authCookieName = 'token';
 const router = express.Router();
 
-// JSON body parsing using built-in middleware
 router.use(express.json());
-
-// Use the cookie parser middleware for tracking authentication tokens
 router.use(cookieParser());
 
 // CreateAuth token for a new user
-router.post('/auth/create', async (req, res) => {
+router.post('/auth/create', async (req: Request, res: Response) => {
   if (await DB.getUser(req.body.email)) {
     res.status(409).send({ msg: 'Existing user' });
   } else {
     const user = await DB.createUser(req.body.name, req.body.email, req.body.password);
-
-    // Set the cookie
     setAuthCookie(res, user.token);
-
-    res.send({
-      id: user._id,
-    });
+    res.send({ id: user._id });
   }
 });
 
 // GetAuth token for the provided credentials
-router.post('/auth/login', async (req, res) => {
+router.post('/auth/login', async (req: Request, res: Response) => {
   const user = await DB.getUser(req.body.email);
-  if (user) {
-    if (await DB.verifyPassword(req.body.password, user.password)) {
-      setAuthCookie(res, user.token);
-      res.send({ id: user._id });
-      return;
-    }
+  if (user && (await DB.verifyPassword(req.body.password, user.password))) {
+    setAuthCookie(res, user.token);
+    res.send({ id: user._id });
+    return;
   }
   res.status(401).send({ msg: 'Unauthorized' });
 });
 
 // DeleteAuth token if stored in cookie
-router.delete('/auth/logout', (_req, res) => {
+router.delete('/auth/logout', (_req: Request, res: Response) => {
   res.clearCookie(authCookieName);
   res.status(204).end();
 });
 
 // GetUser returns information about a user
-router.get('/user/:email', async (req, res) => {
-  const user = await DB.getUser(req.params.email);
+router.get('/user/:email', async (req: Request, res: Response) => {
+  const user = await DB.getUser(String(req.params.email));
   if (user) {
     const token = req?.cookies.token;
     res.send({ email: user.email, authenticated: token === user.token });
@@ -58,10 +55,10 @@ router.get('/user/:email', async (req, res) => {
 });
 
 // secureApiRouter verifies credentials for endpoints
-var secureApiRouter = express.Router();
+const secureApiRouter = express.Router();
 router.use(secureApiRouter);
 
-secureApiRouter.use(async (req, res, next) => {
+secureApiRouter.use(async (req: Request, res: Response, next) => {
   const authToken = req.cookies[authCookieName];
   const user = await DB.getUserByToken(authToken);
   if (user) {
@@ -73,18 +70,17 @@ secureApiRouter.use(async (req, res, next) => {
   }
 });
 
-secureApiRouter.get('/auth/me', (req, res) => {
-  res.send({ email: req.user.email, name: req.user.name });
+secureApiRouter.get('/auth/me', (req: Request, res: Response) => {
+  res.send({ email: req.user!.email, name: req.user!.name });
 });
 
-secureApiRouter.delete('/auth/account', async (req, res) => {
-  await DB.deleteUser(req.user.email);
+secureApiRouter.delete('/auth/account', async (req: Request, res: Response) => {
+  await DB.deleteUser(req.user!.email);
   res.clearCookie(authCookieName);
   res.status(204).end();
 });
 
-// setAuthCookie in the HTTP response
-function setAuthCookie(res, authToken) {
+function setAuthCookie(res: Response, authToken: string): void {
   res.cookie(authCookieName, authToken, {
     secure: true,
     httpOnly: true,
@@ -92,7 +88,4 @@ function setAuthCookie(res, authToken) {
   });
 }
 
-module.exports = {
-    router: router,
-    secureApiRouter: secureApiRouter,
-};
+export { router, secureApiRouter };
