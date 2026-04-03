@@ -1,5 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const DB = require('./modules/database.js');
+
+const dbUser = process.env.MONGOUSER;
+const dbPassword = process.env.MONGOPASSWORD;
+const dbHostname = process.env.MONGOHOSTNAME;
+
+if (!dbUser) {
+  throw Error('Database not configured. Set environment variables');
+}
+
+DB.connect(`mongodb+srv://${dbUser}:${dbPassword}@${dbHostname}`);
+
 const { router: authRouter, secureApiRouter } = require('./modules/auth.js');
 const { publicRouter: reviewsPublicRouter, secureRouter: reviewsSecureRouter } = require('./modules/reviews.js');
 

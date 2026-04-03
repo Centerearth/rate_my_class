@@ -4,19 +4,15 @@ const { promisify } = require('util');
 
 const scrypt = promisify(crypto.scrypt);
 
-const userName = process.env.MONGOUSER;
-const password = process.env.MONGOPASSWORD;
-const hostname = process.env.MONGOHOSTNAME;
+let userCollection;
+let reviewCollection;
 
-if (!userName) {
-  throw Error('Database not configured. Set environment variables');
+function connect(url) {
+  const client = new MongoClient(url);
+  userCollection = client.db('startup').collection('user');
+  reviewCollection = client.db('startup').collection('reviews');
+  return client;
 }
-
-const url = `mongodb+srv://${userName}:${password}@${hostname}`;
-
-const client = new MongoClient(url);
-const userCollection = client.db('startup').collection('user');
-const reviewCollection = client.db('startup').collection('reviews');
 
 function getUser(email) {
   return userCollection.findOne({ email: email });
@@ -53,7 +49,7 @@ async function createUser(name, email, password) {
 }
 
 function addReview(review) {
-  reviewCollection.insertOne(review);
+  return reviewCollection.insertOne(review);
 }
 
 function getReview(classId) {
@@ -66,6 +62,7 @@ function deleteUser(email) {
 }
 
 module.exports = {
+  connect,
   getUser,
   getUserByToken,
   createUser,
