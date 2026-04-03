@@ -14,7 +14,7 @@ export default function LoginPage() {
       await login(email, password);
       navigate('/');
     } catch (error) {
-      alert(`⚠ Error: ${error.message}`);
+      alert(`⚠ Error: ${(error as Error).message}`);
     }
   }
 
@@ -24,10 +24,7 @@ export default function LoginPage() {
         <div className="card shadow-sm" style={{ width: '25rem' }}>
           <div className="card-body p-4">
             <h1 className="card-title text-center mb-4">Login</h1>
-            <form id="myForm" onSubmit={(e) => {
-              e.preventDefault();
-              loginUser();
-            }}>
+            <form id="myForm" onSubmit={(e) => { e.preventDefault(); loginUser(); }}>
               <div className="form-floating mb-3">
                 <input
                   type="email"
@@ -54,9 +51,7 @@ export default function LoginPage() {
                 Sign in
               </button>
               <div className="text-center mt-3 d-flex justify-content-center align-items-center">
-                <p className="mb-0 me-2">
-                  Don't have an account?
-                </p>
+                <p className="mb-0 me-2">Don't have an account?</p>
                 <button type="button" className="btn btn-primary" onClick={() => navigate('/sign-up')}>
                   Sign up
                 </button>

@@ -1,10 +1,10 @@
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [selectedClass, setSelectedClass] = React.useState('');
+  const [selectedClass, setSelectedClass] = useState('');
 
   function goto() {
     if (selectedClass) {

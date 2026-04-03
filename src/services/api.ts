@@ -1,11 +1,17 @@
-/**
- * Sends a POST request to a specified authentication endpoint.
- * @param {string} endpoint - The API endpoint to hit (e.g., '/api/auth/login').
- * @param {object} data - The JSON data to send in the request body.
- * @returns {Promise<object>} - The JSON response body from the server.
- * @throws {Error} - Throws an error if the network response is not OK.
- */
-export async function postAuthRequest(endpoint, data) {
+export interface User {
+  name: string;
+  email: string;
+}
+
+export interface Review {
+  name: string;
+  grade: string;
+  date: string;
+  class: string;
+  review: string;
+}
+
+export async function postAuthRequest(endpoint: string, data: Record<string, string>): Promise<unknown> {
   const response = await fetch(endpoint, {
     method: 'post',
     body: JSON.stringify(data),
@@ -23,13 +29,11 @@ export async function postAuthRequest(endpoint, data) {
   return body;
 }
 
-export async function logout() {
-  await fetch(`/api/auth/logout`, {
-    method: 'delete',
-  });
+export async function logout(): Promise<void> {
+  await fetch(`/api/auth/logout`, { method: 'delete' });
 }
 
-export async function getUser() {
+export async function getUser(): Promise<User | null> {
   const response = await fetch('/api/auth/me');
   if (response.ok) {
     return response.json();
@@ -37,16 +41,16 @@ export async function getUser() {
   return null;
 }
 
-export async function postReview(classNum, review) {
+export async function postReview(classNum: string, review: Review): Promise<Review[]> {
   const response = await fetch(`/api/review/${classNum}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(review),
   });
-  return await response.json();
+  return response.json();
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(): Promise<void> {
   const response = await fetch('/api/auth/account', { method: 'DELETE' });
   if (!response.ok) {
     throw new Error('Failed to delete account');

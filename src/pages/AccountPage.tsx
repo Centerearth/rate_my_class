@@ -15,7 +15,7 @@ export default function AccountPage() {
       clearUser();
       navigate('/');
     } catch (e) {
-      alert(e.message);
+      alert((e as Error).message);
     }
   }
 
