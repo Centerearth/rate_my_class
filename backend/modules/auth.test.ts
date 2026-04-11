@@ -5,6 +5,7 @@ jest.mock('./database', () => ({
     getUserByToken: jest.fn(),
     createUser: jest.fn(),
     deleteUser: jest.fn(),
+    verifyPassword: jest.fn(),
 }));
 
 const request = require('supertest');
@@ -34,6 +35,7 @@ const TEST_USER = {
     email: 'test@example.com',
     name: 'Test User',
     token: TEST_TOKEN,
+    password: 'hashed-pw',
 };
 
 function authed(req: supertest.Test) {
@@ -58,7 +60,6 @@ describe('POST /auth/create', () => {
       .post('/api/auth/create')
       .send({ email: 'test@example.com', name: 'Test User', password: 'pw' });
 
-    console.log(res.body);
     expect(res.status).toBe(409);
     expect(res.body.msg).toBeDefined();
     expect(DB.createUser).not.toHaveBeenCalled();
@@ -72,7 +73,6 @@ describe('POST /auth/create', () => {
       .post('/api/auth/create')
       .send({ email: 'test@example.com', name: 'Test User', password: 'pw' });
 
-    console.log(res.body);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ id: TEST_USER._id });
     expect(DB.createUser).toHaveBeenCalledWith('Test User', 'test@example.com', 'pw');
@@ -80,3 +80,57 @@ describe('POST /auth/create', () => {
 });
 
 
+// ---------------------------------------------------------------------------
+// POST /api/auth/login
+// ---------------------------------------------------------------------------
+
+describe('POST /auth/login', () => {
+  it('test returns 401 when user does not exist', async () => {
+    DB.getUser.mockResolvedValue(null);
+    const res = await request(buildPublicApp())
+      .post('/api/auth/login')
+      .send({ email: 'test@example.com', password: 'pw' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.msg).toBeDefined();
+    expect(DB.verifyPassword).not.toHaveBeenCalled();
+  });
+  it('test returns 401 when password is incorrect', async () => {
+    DB.getUser.mockResolvedValue(TEST_USER);
+    
+    const res = await request(buildPublicApp())
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com', password: 'wrong' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.msg).toBeDefined();
+    expect(DB.verifyPassword).toHaveBeenCalledWith('wrong', TEST_USER.password);
+
+  });
+  it('test returns 200 and sets cookie when credentials are correct', async () => {
+    DB.getUser.mockResolvedValue(TEST_USER);
+    DB.verifyPassword.mockResolvedValue(true);
+
+    const res = await request(buildPublicApp())
+        .post('/api/auth/login')
+        .send({ email: 'test@example.com', password: 'pw' });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ id: TEST_USER._id });
+    expect(DB.verifyPassword).toHaveBeenCalledWith('pw', TEST_USER.password);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /api/auth/logout
+// ---------------------------------------------------------------------------
+
+describe('DELETE /auth/logout', () => {
+  it('test clears the auth cookie', async () => {
+    const res = await request(buildPublicApp())
+        .delete('/api/auth/logout');
+
+    expect(res.status).toBe(204);
+    expect(res.headers['set-cookie']).toBeDefined();
+  });
+});
