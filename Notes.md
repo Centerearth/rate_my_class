@@ -1,6 +1,6 @@
 Write unit tests
 Change into a search bar
-Add the option to add a new class with a new description - need to store it in the database?
+Add the option to add a new class with a new description - need to store it in the database? also to be able to delete reviews
 Make sure no ports are hardcoded
 Modernize the look, fix styling
 Deploy?
