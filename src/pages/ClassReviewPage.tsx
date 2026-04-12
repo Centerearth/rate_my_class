@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import classDescriptionsJson from '../data/class-descriptions.json';
 import NotFoundPage from './NotFoundPage';
-import { Review } from '../services/api';
+import { Review, getReviews } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const classDescriptions = classDescriptionsJson as Record<string, string>;
 
@@ -11,7 +12,7 @@ export default function ClassReviewPage() {
   const { classNum } = useParams<{ classNum: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const description = classNum ? classDescriptions[classNum] : undefined;
-  const userName = localStorage.getItem('userName');
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!classNum) return;
@@ -19,8 +20,7 @@ export default function ClassReviewPage() {
     async function loadReviews() {
       let reviewsData: Review[] = [];
       try {
-        const response = await fetch(`/api/review/${classNum}`);
-        reviewsData = await response.json();
+        reviewsData = await getReviews(classNum!); 
         localStorage.setItem(`reviews-${classNum}`, JSON.stringify(reviewsData));
       } catch (error) {
         console.log(error);
@@ -81,7 +81,7 @@ export default function ClassReviewPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={4}>{userName ? 'No reviews posted yet.' : 'Please login to read and post reviews!'}</td>
+                <td colSpan={4}>{user ? 'No reviews posted yet.' : 'Please login or sign up to read and post reviews!'}</td>
               </tr>
             )}
           </tbody>
