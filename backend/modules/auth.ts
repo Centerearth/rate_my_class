@@ -56,7 +56,6 @@ router.get('/user/:email', async (req: Request, res: Response) => {
 
 // secureApiRouter verifies credentials for endpoints
 const secureApiRouter = express.Router();
-router.use(secureApiRouter);
 
 secureApiRouter.use(async (req: Request, res: Response, next) => {
   const authToken = req.cookies[authCookieName];

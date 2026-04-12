@@ -81,7 +81,7 @@ export default function ClassReviewPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={4}>{user ? 'No reviews posted yet.' : 'Please login or sign up to read and post reviews!'}</td>
+                <td colSpan={4}>{'No reviews posted yet.'}</td>
               </tr>
             )}
           </tbody>

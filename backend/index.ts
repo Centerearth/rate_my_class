@@ -26,9 +26,9 @@ app.use(express.json());
 app.use(express.static('dist'));
 
 app.use('/api', authRouter);
+app.use('/api', reviewsPublicRouter);
 app.use('/api', secureApiRouter);
 secureApiRouter.use(reviewsSecureRouter);
-app.use('/api', reviewsPublicRouter);
 
 app.use(function (err: Error, _req: Request, res: Response, _next: NextFunction) {
   res.status(500).send({ type: err.name, message: err.message });
