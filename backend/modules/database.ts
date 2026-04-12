@@ -51,7 +51,7 @@ export async function verifyPassword(password: string, stored: string): Promise<
 }
 
 export async function createUser(name: string, email: string, password: string): Promise<DBUser> {
-  console.log(`[DB] Creating user record for ${email}`);
+  // console.log(`[DB] Creating user record for ${email}`);
   const user: DBUser = {
     name,
     email,

@@ -134,3 +134,48 @@ describe('DELETE /auth/logout', () => {
     expect(res.headers['set-cookie']).toBeDefined();
   });
 });
+
+
+
+// ---------------------------------------------------------------------------
+// Secure router middleware
+// ---------------------------------------------------------------------------
+
+describe('secureApiRouter auth middleware', () => {
+  it('test returns 401 when no token cookie is provided', async () => {
+    DB.getUserByToken.mockResolvedValue(null);
+
+    const res = await request(buildSecureApp())
+      .get('/api/auth/me');
+
+    expect(res.status).toBe(401);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/auth/me
+// ---------------------------------------------------------------------------
+
+describe('GET /auth/me', () => {
+  it('test returns the current user email and name', async () => {
+    const res = await authed(request(buildSecureApp()).get('/api/auth/me'));
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ email: 'test@example.com', name: 'Test User' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// DELETE /api/auth/account
+// ---------------------------------------------------------------------------
+
+describe('DELETE /auth/account', () => {
+  it('test deletes the account and returns 204', async () => {
+    DB.deleteUser.mockResolvedValue();
+
+    const res = await authed(request(buildSecureApp()).delete('/api/auth/account'));
+
+    expect(res.status).toBe(204);
+    expect(DB.deleteUser).toHaveBeenCalledWith('test@example.com');
+  });
+});
