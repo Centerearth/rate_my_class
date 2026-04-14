@@ -1,5 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as DB from './database';
+import { ObjectId } from 'mongodb';
 
 let mongod: MongoMemoryServer;
 let client: import('mongodb').MongoClient;
@@ -99,19 +100,48 @@ describe('verifyPassword', () => {
 
 // --- Review tests ---
 
-describe('addReview / getReview', () => {
+describe('addReview / getReviews / getReviewByID', () => {
   test('stores and retrieves reviews by classId', async () => {
-    await DB.addReview({ class: 'CS101', rating: 5, name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' } as any);
-    await DB.addReview({ class: 'CS101', rating: 3, name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.' } as any);
-    await DB.addReview({ class: 'MATH200', rating: 4, name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.' } as any);
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
+    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.' });
+    await DB.addReview({ class: 'MATH200', name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.' });
 
-    const cs101Reviews = await DB.getReview('CS101');
+    const cs101Reviews = await DB.getReviews('CS101');
     expect(cs101Reviews).toHaveLength(2);
     expect(cs101Reviews.every((r) => r.class === 'CS101')).toBe(true);
   });
 
   test('returns empty array when no reviews for class', async () => {
-    const reviews = await DB.getReview('NONEXISTENT');
+    const reviews = await DB.getReviews('NONEXISTENT');
     expect(reviews).toHaveLength(0);
   });
+
+  test('getReviewByID returns the correct review', async () => {
+    const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
+    const reviewId = result.insertedId.toString();
+
+    const review = await DB.getReviewByID(reviewId);
+    expect(review).not.toBeNull();
+    //expect(review!._id.toString()).toBe(reviewId);
+    expect(review!.name).toBe('Alice');
+  });
+
+  test('getReviewByID returns null for unknown ID', async () => {
+    const review = await DB.getReviewByID(new ObjectId().toString());
+    expect(review).toBeNull();
+  });
 });
+
+// ---------------------------------------------------------------------------
+
+describe('deleteReview', () => {
+  it('removes a single review by ID', async () => {
+
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
+    expect(await DB.getReviews('CS101')).toHaveLength(1);
+    await DB.deleteReview('69a20f986c3637ee0c6282c2'); //has to be a valid ObjectId format
+    console.log(await DB.getReviewByID('69a20f986c3637ee0c6282c2'));
+    expect(await DB.getReviewByID('69a20f986c3637ee0c6282c2')).toBeNull();
+  });
+});
+//need to update reviews to store user email and id? 

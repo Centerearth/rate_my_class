@@ -41,6 +41,12 @@ export async function getUser(): Promise<User | null> {
   return null;
 }
 
+export async function getReviews(classNum: string): Promise<Review[]> {
+  const response = await fetch(`/api/review/${classNum}`);
+  return response.json();
+}
+
+
 export async function postReview(classNum: string, review: Review): Promise<Review[]> {
   const response = await fetch(`/api/review/${classNum}`, {
     method: 'POST',

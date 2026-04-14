@@ -51,7 +51,7 @@ export async function verifyPassword(password: string, stored: string): Promise<
 }
 
 export async function createUser(name: string, email: string, password: string): Promise<DBUser> {
-  console.log(`[DB] Creating user record for ${email}`);
+  // console.log(`[DB] Creating user record for ${email}`);
   const user: DBUser = {
     name,
     email,
@@ -66,9 +66,18 @@ export function addReview(review: DBReview): Promise<import('mongodb').InsertOne
   return reviewCollection.insertOne(review);
 }
 
-export function getReview(classId: string): Promise<DBReview[]> {
+export function getReviewByID(id: string): Promise<DBReview | null> {
+  return reviewCollection.findOne({ _id: new ObjectId(id) });
+}
+
+export function deleteReview(id: string): Promise<import('mongodb').DeleteResult> {
+  return reviewCollection.deleteOne({ _id: new ObjectId(id) });
+}
+
+export function getReviews(classId: string): Promise<DBReview[]> {
   return reviewCollection.find({ class: classId }).toArray();
 }
+
 
 export function deleteUser(email: string): Promise<import('mongodb').DeleteResult> {
   return userCollection.deleteOne({ email: String(email) });
