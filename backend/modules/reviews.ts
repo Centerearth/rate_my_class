@@ -7,7 +7,7 @@ const secureRouter = express.Router();
 // GetReviews — public
 publicRouter.get('/review/:class', async (req, res) => {
   const classUsed = String(req.params['class']);
-  const reviews = await DB.getReview(classUsed);
+  const reviews = await DB.getReviews(classUsed);
   res.send(reviews);
 });
 
@@ -34,7 +34,7 @@ secureRouter.post('/review/:class', async (req, res) => {
   }
 
   await DB.addReview({ name, grade, date, class: classUsed, review });
-  const reviews = await DB.getReview(classUsed);
+  const reviews = await DB.getReviews(classUsed);
   res.send(reviews);
 });
 

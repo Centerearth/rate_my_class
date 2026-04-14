@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 
 jest.mock('./database', () => ({
-    getReview: jest.fn(),
+    getReviews: jest.fn(),
     addReview: jest.fn(),
 }));
 
@@ -73,7 +73,7 @@ describe('POST /review/:class', () => {
 
 describe('GET /review/:class', () => {
   it('test returns the reviews for the specified class', async () => {
-    DB.getReview.mockResolvedValue([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' }]);
+    DB.getReviews.mockResolvedValue([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' }]);
 
     const res = await request(buildPublicApp())
       .get('/api/review/test-class');

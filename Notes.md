@@ -1,8 +1,8 @@
-Write unit tests
+Write unit tests for classes, write unit tests for delete reviews
+Implement ability to add a new class, then to delete reviews
 Change into a search bar
 Submitting an invalid class review doesn't display an error message, it just auto redirects
 Maybe add an overall rating?
-Not being logged in makes the classes display "no reviews added" I want to let everyone see the reviews.
 Add the option to add a new class with a new description - need to store it in the database? also to be able to delete reviews
 Make sure no ports are hardcoded
 Modernize the look, fix styling
