@@ -100,7 +100,7 @@ describe('verifyPassword', () => {
 
 // --- Review tests ---
 
-describe('addReview / getReviews / getReviewByID', () => {
+describe('addReview / getReviews / getReviewByID / getReviewsByEmail', () => {
   test('stores and retrieves reviews by classId', async () => {
     await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
@@ -129,6 +129,21 @@ describe('addReview / getReviews / getReviewByID', () => {
   test('getReviewByID returns null for unknown ID', async () => {
     const review = await DB.getReviewByID(new ObjectId().toString());
     expect(review).toBeNull();
+  });
+
+  test('stores and retrieves reviews by email', async () => {
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
+    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
+    await DB.addReview({ class: 'MATH200', name: 'Alice', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'a@b.com' });
+
+    const aliceReviews = await DB.getReviewsByEmail('a@b.com');
+    expect(aliceReviews).toHaveLength(2);
+    expect(aliceReviews.every((r) => r.email === 'a@b.com')).toBe(true);
+  });
+
+  test('returns empty array when no reviews from a certain email', async () => {
+    const reviews = await DB.getReviewsByEmail('NONEXISTENT');
+    expect(reviews).toHaveLength(0);
   });
 });
 

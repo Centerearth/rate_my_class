@@ -79,6 +79,10 @@ export function getReviews(classId: string): Promise<DBReview[]> {
   return reviewCollection.find({ class: classId }).toArray();
 }
 
+export function getReviewsByEmail(email: string): Promise<DBReview[]> {
+  return reviewCollection.find({ email }).toArray();
+}
+
 
 export function deleteUser(email: string): Promise<import('mongodb').DeleteResult> {
   return userCollection.deleteOne({ email: String(email) });

@@ -1,9 +1,8 @@
-Write unit tests for classes, write unit tests for delete reviews
-Implement ability to add a new class, then to delete reviews
+write unit tests for delete reviews - finished, update api and accountpage to display reviews, then implement deletion
+Write unit tests for classes, Put classes and their descriptions in the backend, Implement ability to add a new class (where from?)
 Change into a search bar
 Submitting an invalid class review doesn't display an error message, it just auto redirects
 Maybe add an overall rating?
-Add the option to add a new class with a new description - need to store it in the database? also to be able to delete reviews
 Make sure no ports are hardcoded
 Modernize the look, fix styling
 Deploy?
@@ -76,11 +75,5 @@ _Frontend (Vitest + React Testing Library):_
 - `ProtectedRoute`: verify unauthenticated users are redirected and authenticated users see the child component.
 - `ClassReviewPage`: verify that an unknown `classNum` renders the 404 state, and a valid one renders reviews.
 - `ReviewMakerPage`: verify the name field is pre-filled from context when a user is logged in.
-
-_Backend (Vitest or Jest):_
-- `database.js`: mock the MongoDB client and verify `addUser`, `getUser`, `addReview`, `getReviews` call the correct collection methods with the right arguments.
-- `auth.js`: verify that `POST /api/auth/login` with valid credentials sets a cookie, and with invalid credentials returns 401.
-- `reviews.js`: verify that `POST /api/review/:class` without a valid auth cookie returns 401 (once that protection is added in item 3).
-
 
 ---
