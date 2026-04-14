@@ -2,6 +2,7 @@ import supertest from 'supertest';
 
 jest.mock('./database', () => ({
     getReviews: jest.fn(),
+    getReviewsByEmail: jest.fn(),
     addReview: jest.fn(),
 }));
 
@@ -77,6 +78,22 @@ describe('GET /review/:class', () => {
 
     const res = await request(buildPublicApp())
       .get('/api/review/test-class');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/review/email/:email
+// ---------------------------------------------------------------------------
+
+describe('GET /review/email/:email', () => {
+  it('test returns the reviews for the specified email', async () => {
+    DB.getReviewsByEmail.mockResolvedValue([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);
+
+    const res = await request(buildPublicApp())
+      .get('/api/review/email/a@b.com');
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);

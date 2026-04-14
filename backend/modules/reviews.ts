@@ -11,6 +11,14 @@ publicRouter.get('/review/:class', async (req, res) => {
   res.send(reviews);
 });
 
+// GetReviewsByEmail — public
+publicRouter.get('/review/email/:email', async (req, res) => {
+  const email = String(req.params['email']);
+  const reviews = await DB.getReviewsByEmail(email);
+  res.send(reviews);
+});
+
+
 const VALID_GRADES = new Set(['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F']);
 
 // SubmitReview — requires auth (mounted behind secureApiRouter)
