@@ -102,9 +102,9 @@ describe('verifyPassword', () => {
 
 describe('addReview / getReviews / getReviewByID', () => {
   test('stores and retrieves reviews by classId', async () => {
-    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
-    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.' });
-    await DB.addReview({ class: 'MATH200', name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.' });
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
+    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
+    await DB.addReview({ class: 'MATH200', name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'c@b.com' });
 
     const cs101Reviews = await DB.getReviews('CS101');
     expect(cs101Reviews).toHaveLength(2);
@@ -117,7 +117,7 @@ describe('addReview / getReviews / getReviewByID', () => {
   });
 
   test('getReviewByID returns the correct review', async () => {
-    const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
+    const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     const reviewId = result.insertedId.toString();
 
     const review = await DB.getReviewByID(reviewId);
@@ -137,7 +137,7 @@ describe('addReview / getReviews / getReviewByID', () => {
 describe('deleteReview', () => {
   it('removes a single review by ID', async () => {
 
-    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!' });
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     expect(await DB.getReviews('CS101')).toHaveLength(1);
     await DB.deleteReview('69a20f986c3637ee0c6282c2'); //has to be a valid ObjectId format
     console.log(await DB.getReviewByID('69a20f986c3637ee0c6282c2'));

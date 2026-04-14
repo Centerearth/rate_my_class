@@ -18,6 +18,7 @@ export interface DBReview {
   date: string;
   class: string;
   review: string;
+  email: string;
 }
 
 let userCollection: import('mongodb').Collection<DBUser>;

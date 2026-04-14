@@ -54,15 +54,15 @@ describe('POST /review/:class', () => {
     expect(res.status).toBe(400);
   });
 
-  it('test creates a new review and returns 201', async () => {
+  it('test creates a new review and returns 200', async () => {
     DB.addReview.mockResolvedValue({ acknowledged: true, insertedId: 'abc123' });
 
     const res = await request(buildSecureApp())
       .post('/api/review/test-class')
-      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' });
+      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' });
 
     expect(res.status).toBe(200);
-    expect(DB.addReview).toHaveBeenCalledWith({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' });
+    expect(DB.addReview).toHaveBeenCalledWith({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' });
   });
 });
 
@@ -73,12 +73,12 @@ describe('POST /review/:class', () => {
 
 describe('GET /review/:class', () => {
   it('test returns the reviews for the specified class', async () => {
-    DB.getReviews.mockResolvedValue([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' }]);
+    DB.getReviews.mockResolvedValue([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);
 
     const res = await request(buildPublicApp())
       .get('/api/review/test-class');
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!' }]);
+    expect(res.body).toEqual([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);
   });
 });

@@ -9,6 +9,7 @@ export interface Review {
   date: string;
   class: string;
   review: string;
+  email: string;
 }
 
 export async function postAuthRequest(endpoint: string, data: Record<string, string>): Promise<unknown> {

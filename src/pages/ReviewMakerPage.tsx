@@ -14,7 +14,8 @@ export default function ReviewMakerPage() {
   async function saveReview() {
     if (!user) return;
     const date = new Date().toLocaleDateString();
-    const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent };
+    const email = user.email;
+    const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email };
     const reviews = await postReview(classNum, newReview);
     localStorage.setItem('reviews', JSON.stringify(reviews));
     navigate(`/${classNum}`);
