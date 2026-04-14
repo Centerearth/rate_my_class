@@ -47,6 +47,11 @@ export async function getReviews(classNum: string): Promise<Review[]> {
   return response.json();
 }
 
+export async function getReviewsByEmail(email: string): Promise<Review[]> {
+  const response = await fetch(`/api/review/email/${email}`);
+  return response.json();
+}
+
 
 export async function postReview(classNum: string, review: Review): Promise<Review[]> {
   const response = await fetch(`/api/review/${classNum}`, {
