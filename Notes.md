@@ -1,4 +1,5 @@
 Write unit tests for classes, Put classes and their descriptions in the backend, Implement ability to add a new class (where from?)
+Figure out lower case upper case stuff
 Change into a search bar
 Add the whole modal thing
 Submitting an invalid class review doesn't display an error message, it just auto redirects
