@@ -1,7 +1,3 @@
-import { get } from 'http';
-import supertest from 'supertest';
-import { getClasses } from './database';
-
 jest.mock('./database', () => ({
     getClassByID: jest.fn(),
     getClasses: jest.fn(),

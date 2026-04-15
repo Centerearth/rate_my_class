@@ -13,6 +13,13 @@ export interface Review {
   email: string;
 }
 
+export interface Class {
+  classId: string;
+  className: string;
+  classDescription: string;
+  credits: number;
+}
+
 export async function postAuthRequest(endpoint: string, data: Record<string, string>): Promise<unknown> {
   const response = await fetch(endpoint, {
     method: 'post',
@@ -74,5 +81,32 @@ export async function deleteAccount(): Promise<void> {
   const response = await fetch('/api/auth/account', { method: 'DELETE' });
   if (!response.ok) {
     throw new Error('Failed to delete account');
+  }
+}
+
+export async function getClassByID(classId: string): Promise<Class> {
+  const response = await fetch(`/api/class/${classId}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch class');
+  }
+  return response.json();
+}
+
+export async function getClasses(): Promise<Class[]> {
+  const response = await fetch('/api/classes');
+  if (!response.ok) {
+    throw new Error('Failed to fetch classes');
+  }
+  return response.json();
+}
+
+export async function addClass(classInfo: Class): Promise<void> {
+  const response = await fetch('/api/class', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(classInfo),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to add class');
   }
 }
