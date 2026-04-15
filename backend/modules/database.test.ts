@@ -20,6 +20,7 @@ afterEach(async () => {
   const db = client.db('startup');
   await db.collection('user').deleteMany({});
   await db.collection('reviews').deleteMany({});
+  await db.collection('classes').deleteMany({});
 });
 
 // --- User tests ---
@@ -100,7 +101,7 @@ describe('verifyPassword', () => {
 
 // --- Review tests ---
 
-describe('addReview / getReviews / getReviewByID / getReviewsByEmail', () => {
+describe('addReview / getReviews', () => {
   test('stores and retrieves reviews by classId', async () => {
     await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
@@ -115,7 +116,9 @@ describe('addReview / getReviews / getReviewByID / getReviewsByEmail', () => {
     const reviews = await DB.getReviews('NONEXISTENT');
     expect(reviews).toHaveLength(0);
   });
+});
 
+describe('getReviewByID', () => {
   test('getReviewByID returns the correct review', async () => {
     const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     const reviewId = result.insertedId.toString();
@@ -130,7 +133,9 @@ describe('addReview / getReviews / getReviewByID / getReviewsByEmail', () => {
     const review = await DB.getReviewByID(new ObjectId().toString());
     expect(review).toBeNull();
   });
+});
 
+describe('getReviewsByEmail', () => {
   test('stores and retrieves reviews by email', async () => {
     await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
@@ -147,10 +152,8 @@ describe('addReview / getReviews / getReviewByID / getReviewsByEmail', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-
 describe('deleteReview', () => {
-  it('removes a single review by ID', async () => {
+  test('removes a single review by ID', async () => {
 
     await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
     expect(await DB.getReviews('CS101')).toHaveLength(1);
@@ -159,4 +162,59 @@ describe('deleteReview', () => {
     expect(await DB.getReviewByID('69a20f986c3637ee0c6282c2')).toBeNull();
   });
 });
-//need to update reviews to store user email and id? 
+
+// --- Class tests ---
+
+describe('addClass / getClass', () => {
+  test('inserts a class and returns the result', async () => {
+    const result = await DB.addClass({
+      classId: 'CS101',
+      className: 'Intro to Computer Science',
+      classDescription: 'Learn the basics of computer science.',
+      credits: 4,
+    });
+    expect(result.insertedId).toBeTruthy();
+  });
+});
+
+  test('gets a class by ID', async () => {
+    const result = await DB.addClass({
+      classId: 'CS101',
+      className: 'Intro to Computer Science',
+      classDescription: 'Learn the basics of computer science.',
+      credits: 4,
+    });
+    const classId = 'CS101';
+
+    const foundClass = await DB.getClassByID(classId);
+    expect(foundClass).not.toBeNull();
+    expect(foundClass!.classId).toBe('CS101');
+  });
+
+  test('returns null for unknown class ID', async () => {
+    const foundClass = await DB.getClassByID("random id");
+    expect(foundClass).toBeNull();
+  });
+
+describe('getClasses', () => {
+  test('returns all classes', async () => {
+    await DB.addClass({
+      classId: 'CS101',
+      className: 'Intro to Computer Science',
+      classDescription: 'Learn the basics of computer science.',
+      credits: 4,
+    });
+    await DB.addClass({
+      classId: 'MATH200',
+      className: 'Calculus I',
+      classDescription: 'Introduction to calculus.',
+      credits: 3,
+    });
+
+    const classes = await DB.getClasses();
+    expect(classes).toHaveLength(2);
+    const classIds = classes.map((c) => c.classId);
+    expect(classIds).toContain('CS101');
+    expect(classIds).toContain('MATH200');
+  });
+});

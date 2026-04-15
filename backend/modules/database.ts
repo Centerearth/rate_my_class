@@ -22,13 +22,23 @@ export interface DBReview {
   email: string;
 }
 
+export interface DBClass {
+  _id?: ObjectId;
+  classId: string;
+  className: string;
+  classDescription: string;
+  credits: number;
+}
+
 let userCollection: import('mongodb').Collection<DBUser>;
 let reviewCollection: import('mongodb').Collection<DBReview>;
+let classCollection: import('mongodb').Collection<DBClass>;
 
 export function connect(url: string): MongoClient {
   const client = new MongoClient(url);
   userCollection = client.db('startup').collection<DBUser>('user');
   reviewCollection = client.db('startup').collection<DBReview>('reviews');
+  classCollection = client.db('startup').collection<DBClass>('classes');
   return client;
 }
 
@@ -64,6 +74,10 @@ export async function createUser(name: string, email: string, password: string):
   return user;
 }
 
+export function deleteUser(email: string): Promise<import('mongodb').DeleteResult> {
+  return userCollection.deleteOne({ email: String(email) });
+}
+
 export function addReview(review: DBReview): Promise<import('mongodb').InsertOneResult> {
   return reviewCollection.insertOne(review);
 }
@@ -84,7 +98,18 @@ export function getReviewsByEmail(email: string): Promise<DBReview[]> {
   return reviewCollection.find({ email }).toArray();
 }
 
-
-export function deleteUser(email: string): Promise<import('mongodb').DeleteResult> {
-  return userCollection.deleteOne({ email: String(email) });
+export function addClass(classInfo: DBClass): Promise<import('mongodb').InsertOneResult> {
+  return classCollection.insertOne(classInfo);
 }
+
+export function getClassByID(id: string): Promise<DBClass | null> {
+  return classCollection.findOne({ classId: id });
+}
+
+export function getClasses(): Promise<DBClass[]> {
+  return classCollection.find().toArray();
+}
+
+
+
+
