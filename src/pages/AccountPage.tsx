@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { deleteAccount as deleteAccountApi } from '../services/api';
+import { deleteAccount as deleteAccountApi, deleteReview } from '../services/api';
 import { getReviewsByEmail } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
@@ -40,6 +40,16 @@ export default function AccountPage() {
     }
   }, [user]);
 
+  async function handleDeleteReview(id: string) {
+    if (!confirm('Are you sure you want to delete this review?')) return;
+        try {
+          await deleteReview(id);
+          loadUserReviews();
+        } catch (e) {
+          console.error('Failed to delete review', e);
+        }
+  }
+
   return (
     <Layout>
       <div id="account-main" className="pt-4">
@@ -57,6 +67,13 @@ export default function AccountPage() {
                     <strong>{review.name}</strong> - {new Date(review.date).toLocaleDateString()}
                     <p>Grade: {review.grade}, Class: {review.class.toLocaleUpperCase()}, Review: {review.review}</p>
                   </div>
+                  <button
+                    className="btn btn-sm btn-outline-danger"
+                    //disabled={passkeyLoading}
+                    onClick={() => handleDeleteReview(review._id!)}
+                  >
+                    Delete
+                  </button>
                 </li>
               ))}
             </ul>

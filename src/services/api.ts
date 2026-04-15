@@ -4,6 +4,7 @@ export interface User {
 }
 
 export interface Review {
+  _id?: string;
   name: string;
   grade: string;
   date: string;
@@ -60,6 +61,13 @@ export async function postReview(classNum: string, review: Review): Promise<Revi
     body: JSON.stringify(review),
   });
   return response.json();
+}
+
+export async function deleteReview(id: string): Promise<void> {
+  const response = await fetch(`/api/review/${id}`, { method: 'DELETE' });
+  if (!response.ok) {
+    throw new Error('Failed to delete review');
+  }
 }
 
 export async function deleteAccount(): Promise<void> {
