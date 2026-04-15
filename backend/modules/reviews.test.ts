@@ -1,8 +1,11 @@
+import { get } from 'http';
 import supertest from 'supertest';
 
 jest.mock('./database', () => ({
     getReviews: jest.fn(),
     getReviewsByEmail: jest.fn(),
+    getReviewByID: jest.fn(),
+    deleteReview: jest.fn(),
     addReview: jest.fn(),
 }));
 
@@ -97,5 +100,22 @@ describe('GET /review/email/:email', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([{ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' }]);
+  });
+});
+
+
+// ---------------------------------------------------------------------------
+// DELETE /api/review/:id
+// ---------------------------------------------------------------------------
+
+describe('DELETE /review/:id', () => {
+  it('test deletes the specified review and returns 204', async () => {
+    DB.getReviewByID.mockResolvedValue({ _id: 'abc123', name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' });
+    DB.deleteReview.mockResolvedValue({});
+
+    const res = await request(buildSecureApp())
+      .delete('/api/review/abc123');
+
+    expect(res.status).toBe(204);
   });
 });

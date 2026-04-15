@@ -1,4 +1,4 @@
-write unit tests for delete reviews - finished, update api and accountpage to display reviews, then implement deletion
+write unit tests for delete reviews - finished, then implement deletion
 Write unit tests for classes, Put classes and their descriptions in the backend, Implement ability to add a new class (where from?)
 Change into a search bar
 Submitting an invalid class review doesn't display an error message, it just auto redirects

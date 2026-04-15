@@ -13,6 +13,7 @@ export interface DBUser {
 }
 
 export interface DBReview {
+  _id?: ObjectId;
   name: string;
   grade: string;
   date: string;

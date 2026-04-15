@@ -46,4 +46,15 @@ secureRouter.post('/review/:class', async (req, res) => {
   res.send(reviews);
 });
 
+secureRouter.delete('/review/:id', async (req, res) => {
+  const id = String(req.params['id']);
+  const review = await DB.getReviewByID(id);
+  if (!review) {
+    res.status(404).json({ msg: 'Review not found' });
+    return;
+  }
+  await DB.deleteReview(id);
+  res.status(204).end();
+});
+
 export { publicRouter, secureRouter };
