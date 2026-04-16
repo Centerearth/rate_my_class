@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { getClasses, Class } from '../services/api';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState('');
+  const [classes, setClasses] = useState<Class[]>([]);
+
+  useEffect(() => {
+    getClasses().then(setClasses).catch(() => setClasses([]));
+  }, []);
 
   function goto() {
     if (selectedClass) {
@@ -23,21 +29,9 @@ export default function HomePage() {
           onChange={(e) => setSelectedClass(e.target.value)}
         >
           <option value="">Class List</option>
-          <option value="cs260">CS 260</option>
-          <option value="cs235">CS 235</option>
-          <option value="cs111">CS 111</option>
-          <option value="cs180">CS 180</option>
-          <option value="math290">MATH 290</option>
-          <option value="acc200">ACC 200</option>
-          <option value="acc241">ACC 241</option>
-          <option value="acc300">ACC 300</option>
-          <option value="acc301">ACC 301</option>
-          <option value="acc310">ACC 310</option>
-          <option value="acc329">ACC 329</option>
-          <option value="acc401">ACC 401</option>
-          <option value="acc403">ACC 403</option>
-          <option value="acc405">ACC 405</option>
-          <option value="acc406">ACC 406</option>
+          {classes.map((c) => (
+            <option key={c.classId} value={c.classId}>{c.classId.toUpperCase()}</option>
+          ))}
         </select>
         <button type="button" className="btn btn-primary btn-block" onClick={goto}>
           GO

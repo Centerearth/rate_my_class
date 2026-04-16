@@ -8,6 +8,7 @@ export default function ClassReviewPage() {
   const { classId } = useParams<{ classId: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!classId) return;
@@ -18,6 +19,8 @@ export default function ClassReviewPage() {
         setDescription(response.classDescription);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -44,6 +47,8 @@ export default function ClassReviewPage() {
 
     loadReviews();
   }, [classId]);
+
+  if (loading) return null;
 
   if (!description) {
     return <NotFoundPage />;
