@@ -42,8 +42,7 @@ secureRouter.post('/review/:class', async (req, res) => {
   }
 
   await DB.addReview({ name, grade, date, class: classUsed, review, email });
-  const reviews = await DB.getReviews(classUsed);
-  res.send(reviews);
+  res.status(201).end();
 });
 
 secureRouter.delete('/review/:id', async (req, res) => {

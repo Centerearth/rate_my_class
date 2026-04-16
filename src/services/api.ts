@@ -61,13 +61,16 @@ export async function getReviewsByEmail(email: string): Promise<Review[]> {
 }
 
 
-export async function postReview(classNum: string, review: Review): Promise<Review[]> {
+export async function postReview(classNum: string, review: Review): Promise<void> {
   const response = await fetch(`/api/review/${classNum}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(review),
   });
-  return response.json();
+  if (!response.ok) {
+    const body = await response.json();
+    throw new Error(body.msg || 'Failed to submit review');
+  }
 }
 
 export async function deleteReview(id: string): Promise<void> {

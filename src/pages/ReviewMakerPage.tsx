@@ -35,7 +35,6 @@ export default function ReviewMakerPage() {
       const email = user.email;
       const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email };
       const reviews = await postReview(classNum, newReview);
-      // localStorage.setItem('reviews', JSON.stringify(reviews));
       navigate(`/${classNum}`);
     } catch (err: unknown) {
       setAddError(err instanceof Error ? err.message : 'Failed to save review');
@@ -53,6 +52,8 @@ export default function ReviewMakerPage() {
       setClassName('');
       setClassDescription('');
       setCredits('');
+      const updated = await getClasses();
+      setClasses(updated);
     } catch (err: unknown) {
       setAddError(err instanceof Error ? err.message : 'Failed to add class');
     }
