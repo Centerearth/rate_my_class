@@ -1,5 +1,4 @@
-Change into a search bar
-Add the whole error modal thing
+Add the whole error modal thing?
 Modernize the look, fix styling
 Make sure no ports are hardcoded
 Deploy?

@@ -12,6 +12,7 @@ export default function ReviewMakerPage() {
   const [reviewContent, setReviewContent] = useState('');
   const [rating, setRating] = useState(3);
   const [classes, setClasses] = useState<Class[]>([]);
+  const [addReviewError, setAddReviewError] = useState('');
 
   useEffect(() => {
     getClasses().then((data) => {
@@ -23,13 +24,18 @@ export default function ReviewMakerPage() {
   const [className, setClassName] = useState('');
   const [classDescription, setClassDescription] = useState('');
   const [credits, setCredits] = useState('');
-  const [addError, setAddError] = useState('');
+  const [addClassError, setClassAddError] = useState('');
   const [addSuccess, setAddSuccess] = useState(false);
 
   async function saveReview(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!classNum || !grade || !reviewContent || !user) return;
-    setAddError('');
+    const validClass = classes.find(c => c.classId === classNum.toLowerCase().trim());
+    if (!validClass) {
+      setAddReviewError(`"${classNum}" is not a recognized class ID.`);
+      return;
+    }
+    setAddReviewError('');
     try {
       const date = new Date().toLocaleDateString();
       const email = user.email;
@@ -37,13 +43,13 @@ export default function ReviewMakerPage() {
       await postReview(classNum, newReview);
       navigate(`/${classNum}`);
     } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Failed to save review');
+      setAddReviewError(err instanceof Error ? err.message : 'Failed to save review');
     }
   }
 
   async function handleAddClass(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAddError('');
+    setClassAddError('');
     setAddSuccess(false);
     try {
       await addClass({ classId: classId.toLowerCase(), className, classDescription, credits: Number(credits) });
@@ -55,7 +61,7 @@ export default function ReviewMakerPage() {
       const updated = await getClasses();
       setClasses(updated);
     } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Failed to add class');
+      setClassAddError(err instanceof Error ? err.message : 'Failed to add class');
     }
   }
 
@@ -122,7 +128,7 @@ export default function ReviewMakerPage() {
                     onChange={(e) => setRating(Number(e.target.value))}
                   />
                 </div>
-                {addError && <div className="alert alert-danger">{addError}</div>}
+                {addReviewError && <div className="alert alert-danger">{addReviewError}</div>}
                 <button type="submit" className="btn btn-primary">Submit Review</button>
               </form>
             </div>
@@ -178,7 +184,7 @@ export default function ReviewMakerPage() {
                       required
                     />
                   </div>
-                  {addError && <div className="alert alert-danger">{addError}</div>}
+                  {addClassError && <div className="alert alert-danger">{addClassError}</div>}
                   {addSuccess && <div className="alert alert-success">Class added successfully!</div>}
                   <button type="submit" className="btn btn-primary">Add Class</button>
                 </form>

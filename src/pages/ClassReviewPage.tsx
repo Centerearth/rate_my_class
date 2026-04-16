@@ -52,7 +52,6 @@ export default function ClassReviewPage() {
       }
       const average = total / reviews.length;
       setAverage(average);
-      console.log(average);
     }
   }, [reviews]);
 
@@ -90,6 +89,7 @@ export default function ClassReviewPage() {
             <tr>
               <th>Name</th>
               <th>Grade</th>
+              <th>Rating</th>
               <th>Date</th>
               <th>Review</th>
             </tr>
@@ -100,6 +100,7 @@ export default function ClassReviewPage() {
                 <tr key={i}>
                   <td>{review.name}</td>
                   <td>{review.grade}</td>
+                  <td>{review.rating ?? '—'}</td>
                   <td>{review.date}</td>
                   <td>{review.review}</td>
                 </tr>
