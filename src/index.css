@@ -1,5 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Epilogue:wght@300;400;500;600&display=swap');
+
+:root {
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: 'Epilogue', system-ui, sans-serif;
+  --bg-base: #000d1a;
+  --bg-glow: rgba(0, 60, 160, 0.5);
+  --surface: rgba(0, 20, 55, 0.7);
+  --border: rgba(0, 90, 200, 0.22);
+  --text-primary: #d8e4f0;
+  --text-muted: rgba(160, 195, 230, 0.55);
+  --text-bright: rgba(190, 215, 240, 0.82);
+  --accent: #1a6fd4;
+}
+
 body {
-  background-color: #ffffff;
+  font-family: var(--font-body);
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(ellipse at 60% 20%, rgba(0, 70, 180, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(0, 40, 120, 0.3) 0%, transparent 48%),
+    linear-gradient(170deg, #001433 0%, #000d1f 50%, #00060f 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
   min-width: 375px;
@@ -26,6 +48,9 @@ footer {
 
 .navbar-brand {
   padding-left: 0.3em;
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
 menu .nav-item {
@@ -99,8 +124,28 @@ td {
   max-width: 40vw;
 }
 
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 60, 180, 0.2);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(160, 195, 230, 0.75) !important;
+}
+
 .nav-link.active {
   color: #fff !important;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 2px;
 }
 
 .nav-link:hover {

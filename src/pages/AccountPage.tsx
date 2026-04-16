@@ -6,21 +6,52 @@ import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { Review } from '../services/api';
 
+function ConfirmModal({ title, message, onConfirm, onCancel }: {
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div onClick={onCancel} style={{ position: 'absolute', inset: 0, background: 'rgba(0, 5, 20, 0.7)', backdropFilter: 'blur(4px)' }} />
+      <div style={{ position: 'relative', background: 'rgba(0, 15, 45, 0.95)', border: '1px solid rgba(0, 90, 200, 0.35)', borderRadius: '14px', padding: '2rem', width: '100%', maxWidth: '380px', boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)' }}>
+        <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.75rem', fontSize: '1.2rem', fontWeight: 700 }}>{title}</h3>
+        <p style={{ color: 'var(--text-bright)', marginBottom: '1.75rem', lineHeight: 1.6 }}>{message}</p>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+          <button onClick={onCancel} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(160,195,230,0.2)', borderRadius: '8px', color: 'var(--text-bright)', padding: '0.5rem 1.25rem', cursor: 'pointer', fontWeight: 500 }}>
+            Cancel
+          </button>
+          <button onClick={onConfirm} style={{ background: 'rgba(160, 30, 30, 0.4)', border: '1px solid rgba(200, 60, 60, 0.45)', borderRadius: '8px', color: 'rgba(230, 110, 110, 0.95)', padding: '0.5rem 1.25rem', cursor: 'pointer', fontWeight: 600 }}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AccountPage() {
   const navigate = useNavigate();
   const { user, clearUser } = useAuth();
   const [reviews, setReviews] = useState([] as Review[]);
+  const [modal, setModal] = useState<{ title: string; message: string; onConfirm: () => void } | null>(null);
+
+  function confirm(title: string, message: string, onConfirm: () => void) {
+    setModal({ title, message, onConfirm });
+  }
 
   async function deleteAccount() {
-    if (!confirm('Are you sure you want to delete your account? This cannot be undone.')) return;
-
-    try {
-      await deleteAccountApi();
-      clearUser();
-      navigate('/');
-    } catch (e) {
-      alert((e as Error).message);
-    }
+    confirm('Delete Account', 'Are you sure you want to delete your account? This cannot be undone.', async () => {
+      setModal(null);
+      try {
+        await deleteAccountApi();
+        clearUser();
+        navigate('/');
+      } catch (e) {
+        alert((e as Error).message);
+      }
+    });
   }
 
   async function loadUserReviews() {
@@ -41,48 +72,82 @@ export default function AccountPage() {
   }, [user]);
 
   async function handleDeleteReview(id: string) {
-    if (!confirm('Are you sure you want to delete this review?')) return;
-        try {
-          await deleteReview(id);
-          loadUserReviews();
-        } catch (e) {
-          console.error('Failed to delete review', e);
-        }
+    confirm('Delete Review', 'Are you sure you want to delete this review?', async () => {
+      setModal(null);
+      try {
+        await deleteReview(id);
+        loadUserReviews();
+      } catch (e) {
+        console.error('Failed to delete review', e);
+      }
+    });
   }
+
+  const card: React.CSSProperties = {
+    background: 'rgba(0, 20, 60, 0.45)',
+    border: '1px solid rgba(0, 90, 200, 0.25)',
+    borderRadius: '12px',
+    padding: '1.75rem 2rem',
+    backdropFilter: 'blur(8px)',
+  };
+
+  const reviewItem: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '1rem 0',
+    borderBottom: '1px solid rgba(0, 90, 200, 0.15)',
+  };
 
   return (
     <Layout>
-      <div id="account-main" className="pt-4">
-        <h1>Account</h1>
+      {modal && <ConfirmModal title={modal.title} message={modal.message} onConfirm={modal.onConfirm} onCancel={() => setModal(null)} />}
+      <div style={{ width: '100%', maxWidth: '800px', padding: '2.5rem 1.5rem', textAlign: 'left' }}>
+        <h1 style={{ color: 'var(--text-primary)', marginBottom: '1.75rem' }}>Account</h1>
         {user && (
-          <div className="mt-4 text-start">
-            <p className="fs-5"><strong>Name:</strong> {user.name}</p>
-            <p className="fs-5"><strong>Email:</strong> {user.email}</p>
-            <h4 className="mt-5">Your Reviews</h4>
-          {reviews.length > 0 ? (
-            <ul className="list-group mt-3">
-              {reviews.map((review) => (
-                <li key={review.date} className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{review.name}</strong> - {new Date(review.date).toLocaleDateString()}
-                    <p>Grade: {review.grade}, Rating: {review.rating?.toString() || 'N/A'}, Class: {review.class.toLocaleUpperCase()}, Review: {review.review}</p>
-                  </div>
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    //disabled={passkeyLoading}
-                    onClick={() => handleDeleteReview(review._id!)}
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>You have no reviews yet.</p>
-          )}
-            <button className="btn btn-danger mt-3" onClick={deleteAccount}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+            <div className="card-hover" style={card}>
+              <p style={{ color: 'var(--text-bright)', margin: '0 0 0.5rem' }}><strong style={{ color: 'var(--text-primary)' }}>Name:</strong> {user.name}</p>
+              <p style={{ color: 'var(--text-bright)', margin: 0 }}><strong style={{ color: 'var(--text-primary)' }}>Email:</strong> {user.email}</p>
+            </div>
+
+            <div className="card-hover" style={card}>
+              <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Your Reviews</h4>
+              {reviews.length > 0 ? (
+                <div>
+                  {reviews.map((review, i) => (
+                    <div key={review.date} style={{ ...reviewItem, ...(i === reviews.length - 1 ? { borderBottom: 'none', paddingBottom: 0 } : {}) }}>
+                      <div>
+                        <p style={{ color: 'var(--text-primary)', margin: '0 0 0.25rem' }}>
+                          <strong>{review.name}</strong> — {new Date(review.date).toLocaleDateString()}
+                        </p>
+                        <p style={{ color: 'var(--text-bright)', margin: 0 }}>
+                          Grade: {review.grade} &nbsp;·&nbsp; Rating: {review.rating?.toString() || 'N/A'} &nbsp;·&nbsp; Class: {review.class.toLocaleUpperCase()}
+                        </p>
+                        <p style={{ color: 'var(--text-bright)', margin: '0.25rem 0 0' }}>{review.review}</p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteReview(review._id!)}
+                        style={{ background: 'transparent', border: '1px solid rgba(200, 60, 60, 0.5)', color: 'rgba(220, 100, 100, 0.9)', borderRadius: '6px', padding: '0.3rem 0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', marginLeft: '1.5rem' }}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: 'var(--text-muted)', margin: 0 }}>You have no reviews yet.</p>
+              )}
+            </div>
+
+            <button
+              onClick={deleteAccount}
+              style={{ alignSelf: 'flex-start', background: 'rgba(160, 30, 30, 0.35)', border: '1px solid rgba(200, 60, 60, 0.4)', color: 'rgba(230, 110, 110, 0.95)', borderRadius: '8px', padding: '0.55rem 1.5rem', cursor: 'pointer', fontWeight: 600 }}
+            >
               Delete Account
             </button>
+
           </div>
         )}
       </div>

@@ -3,6 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
+const inputStyle: React.CSSProperties = {
+  background: 'rgba(0, 20, 60, 0.6)',
+  border: '1px solid rgba(0, 90, 200, 0.35)',
+  borderRadius: '8px',
+  color: 'var(--text-primary)',
+  padding: '0.6rem 0.75rem',
+  width: '100%',
+};
+
+const btnStyle: React.CSSProperties = {
+  background: 'linear-gradient(135deg, #0a4aab 0%, #1a6fd4 100%)',
+  border: '1px solid rgba(0, 100, 220, 0.4)',
+  borderRadius: '8px',
+  color: '#fff',
+  padding: '0.6rem',
+  fontWeight: 600,
+  cursor: 'pointer',
+  width: '100%',
+};
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -20,44 +40,32 @@ export default function LoginPage() {
 
   return (
     <Layout>
-      <div id="login-main" className="pt-5">
-        <div className="card shadow-sm" style={{ width: '25rem' }}>
-          <div className="card-body p-4">
-            <h1 className="card-title text-center mb-4">Login</h1>
-            <form id="myForm" onSubmit={(e) => { e.preventDefault(); loginUser(); }}>
-              <div className="form-floating mb-3">
-                <input
-                  type="email"
-                  id="loginEmail"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                />
-                <label htmlFor="loginEmail">Email address</label>
-              </div>
-              <div className="form-floating mb-4">
-                <input
-                  type="password"
-                  id="loginPassword"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                />
-                <label htmlFor="loginPassword">Password</label>
-              </div>
-              <button type="submit" className="btn btn-primary w-100 py-2">
-                Sign in
+      <div style={{ width: '100%', maxWidth: '400px', padding: '1rem' }}>
+        <div style={{
+          background: 'rgba(0, 20, 60, 0.45)',
+          border: '1px solid rgba(0, 90, 200, 0.25)',
+          borderRadius: '12px',
+          padding: '2rem',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <h1 style={{ color: 'var(--text-primary)', textAlign: 'center', marginBottom: '1.75rem', fontSize: '1.75rem', fontWeight: 700 }}>Login</h1>
+          <form onSubmit={(e) => { e.preventDefault(); loginUser(); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={{ color: 'var(--text-bright)', display: 'block', marginBottom: '0.4rem' }}>Email address</label>
+              <input type="email" style={inputStyle} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required />
+            </div>
+            <div>
+              <label style={{ color: 'var(--text-bright)', display: 'block', marginBottom: '0.4rem' }}>Password</label>
+              <input type="password" style={inputStyle} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+            </div>
+            <button type="submit" style={{ ...btnStyle, marginTop: '0.5rem' }}>Sign in</button>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Don't have an account?</span>
+              <button type="button" onClick={() => navigate('/sign-up')} style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', fontWeight: 600, padding: 0 }}>
+                Sign up
               </button>
-              <div className="text-center mt-3 d-flex justify-content-center align-items-center">
-                <p className="mb-0 me-2">Don't have an account?</p>
-                <button type="button" className="btn btn-primary" onClick={() => navigate('/sign-up')}>
-                  Sign up
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </Layout>

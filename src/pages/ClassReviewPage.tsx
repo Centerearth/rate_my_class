@@ -61,57 +61,50 @@ export default function ClassReviewPage() {
     return <NotFoundPage />;
   }
 
+  const card: React.CSSProperties = {
+    background: 'rgba(0, 20, 60, 0.45)',
+    border: '1px solid rgba(0, 90, 200, 0.25)',
+    borderRadius: '12px',
+    padding: '1.75rem 2rem',
+    backdropFilter: 'blur(8px)',
+  };
+
   return (
     <Layout>
-      <div className="row">
-        <div className="col">
-          <div className="card" style={{ width: '20rem' }}>
-            <div className="card-body">
-              <h5 className="card-title text-center">{classId!.toUpperCase()}</h5>
-              <p className="card-text">{classInfo.classDescription}</p>
-            </div>
+      <div style={{ width: '100%', maxWidth: '900px', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', textAlign: 'left' }}>
+
+        <div style={card}>
+          <h2 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+            {classId!.toUpperCase()} — {classInfo.className}
+          </h2>
+          <p style={{ color: 'var(--text-bright)', margin: '0 0 1rem', lineHeight: 1.7 }}>{classInfo.classDescription}</p>
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            <span style={{ color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-primary)' }}>Credits:</strong> {classInfo.credits}</span>
+            <span style={{ color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text-primary)' }}>Avg Rating:</strong> {reviews.length > 0 ? `${average.toFixed(1)} / 5` : 'No ratings yet'}</span>
           </div>
         </div>
-        <div className="col">
-          <div className="card" style={{ width: '50rem' }}>
-            <div className="card-header">{classId!.toUpperCase()}</div>
-            <div className="card-body">
-              <p><strong>Class Name:</strong> {classInfo.className}</p>
-              <p><strong>Credits:</strong> {classInfo.credits}</p>
-              <p><strong>Average Rating:</strong> {average.toFixed(1)}</p>
+
+        <div style={card}>
+          <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem' }}>Reviews</h4>
+          {reviews.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {reviews.map((review, i) => (
+                <div key={i} style={{ paddingBottom: '1rem', borderBottom: i < reviews.length - 1 ? '1px solid rgba(0, 90, 200, 0.15)' : 'none' }}>
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.35rem', alignItems: 'baseline' }}>
+                    <strong style={{ color: 'var(--text-primary)' }}>{review.name}</strong>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{review.date}</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Grade: {review.grade}</span>
+                    <span style={{ color: '#f5c518', fontSize: '0.85rem' }}>{'★'.repeat(Math.floor(review.rating ?? 0))}{(review.rating ?? 0) % 1 ? '½' : ''} {review.rating ?? '—'}/5</span>
+                  </div>
+                  <p style={{ color: 'var(--text-bright)', margin: 0, lineHeight: 1.7 }}>{review.review}</p>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <p style={{ color: 'var(--text-muted)', margin: 0 }}>No reviews posted yet.</p>
+          )}
         </div>
-      </div>
-      <div className="container-fluid text-center">
-        <table className="table table-striped-columns">
-          <thead className="table-primary">
-            <tr>
-              <th>Name</th>
-              <th>Grade</th>
-              <th>Rating</th>
-              <th>Date</th>
-              <th>Review</th>
-            </tr>
-          </thead>
-          <tbody id="reviewTable">
-            {reviews.length > 0 ? (
-              reviews.map((review, i) => (
-                <tr key={i}>
-                  <td>{review.name}</td>
-                  <td>{review.grade}</td>
-                  <td>{review.rating ?? '—'}</td>
-                  <td>{review.date}</td>
-                  <td>{review.review}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4}>{'No reviews posted yet.'}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+
       </div>
     </Layout>
   );

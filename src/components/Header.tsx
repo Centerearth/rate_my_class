@@ -15,7 +15,7 @@ export default function Header() {
   }
 
   return (
-    <header className="container-fluid bg-primary">
+    <header className="container-fluid" style={{ background: 'transparent', borderBottom: 'none' }}>
       <nav className="navbar navbar-dark align-items-center">
         <NavLink className="navbar-brand" to="/">
           Rate My Class

@@ -42,7 +42,7 @@ beforeEach(() => {
 describe('ClassReviewPage', () => {
   it('shows class info after loading', async () => {
     render(<ClassReviewPage />);
-    expect(await screen.findByText('Web Programming')).toBeInTheDocument();
+    expect(await screen.findByText(/Web Programming/)).toBeInTheDocument();
     expect(await screen.findByText(/credits/i)).toBeInTheDocument();
   });
 
@@ -63,7 +63,7 @@ describe('ClassReviewPage', () => {
     render(<ClassReviewPage />);
     await screen.findByText('Alice'); // wait for reviews to render
     await waitFor(() => {
-      expect(screen.getByText(/average rating/i).closest('p')).toHaveTextContent('4.5');
+      expect(screen.getByText(/avg rating/i).closest('span')).toHaveTextContent('4.5');
     });
   });
 
@@ -72,7 +72,7 @@ describe('ClassReviewPage', () => {
       { _id: '1', name: 'Alice', grade: 'A', date: '1/1/2025', class: 'cs260', review: 'Great!', email: 'a@test.com' },
     ]);
     render(<ClassReviewPage />);
-    expect(await screen.findByText('—')).toBeInTheDocument();
+    expect(await screen.findByText(/—\/5/)).toBeInTheDocument();
   });
 
   it('shows "No reviews posted yet" when there are no reviews', async () => {

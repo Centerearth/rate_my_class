@@ -44,7 +44,7 @@ describe('ReviewMakerPage', () => {
     render(<ReviewMakerPage />);
     expect(screen.getByPlaceholderText('Search for a class...')).toBeInTheDocument();
     expect(screen.getByText('Grade')).toBeInTheDocument();
-    expect(screen.getByRole('slider')).toBeInTheDocument();
+    expect(screen.getByText('Rating')).toBeInTheDocument();
   });
 
   it('shows Add a Class form when logged in', () => {

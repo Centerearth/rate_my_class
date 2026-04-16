@@ -4,7 +4,7 @@ import Footer from './Footer';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="text-dark layout-container">
+    <div className="layout-container">
       <Header />
       <main className="container-fluid text-center">{children}</main>
       <Footer />
