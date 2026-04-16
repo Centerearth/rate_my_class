@@ -2,21 +2,22 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import NotFoundPage from './NotFoundPage';
-import { Review, getClassByID, getReviews } from '../services/api';
+import { Review, Class, getClassByID, getReviews } from '../services/api';
 
 export default function ClassReviewPage() {
   const { classId } = useParams<{ classId: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [description, setDescription] = useState('');
+  const [average, setAverage] = useState<number>(0);
+  const [classInfo, setClassInfo] = useState<Class | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!classId) return;
 
-    async function loadClassDescription() {
+    async function loadClassInfo() {
       try {
         const response = await getClassByID(classId!);
-        setDescription(response.classDescription);
+        setClassInfo(response);
       } catch (error) {
         console.log(error);
       } finally {
@@ -24,7 +25,7 @@ export default function ClassReviewPage() {
       }
     }
 
-    loadClassDescription();
+    loadClassInfo();
   }, [classId]);
 
   useEffect(() => {
@@ -33,14 +34,9 @@ export default function ClassReviewPage() {
     async function loadReviews() {
       let reviewsData: Review[] = [];
       try {
-        reviewsData = await getReviews(classId!); 
-        localStorage.setItem(`reviews-${classId}`, JSON.stringify(reviewsData));
+        reviewsData = await getReviews(classId!);
       } catch (error) {
         console.log(error);
-        const reviewsText = localStorage.getItem(`reviews-${classId}`);
-        if (reviewsText) {
-          reviewsData = JSON.parse(reviewsText);
-        }
       }
       setReviews(reviewsData);
     }
@@ -48,9 +44,21 @@ export default function ClassReviewPage() {
     loadReviews();
   }, [classId]);
 
+  useEffect(() => {
+    if (reviews.length > 0) {
+      let total = 0;
+      for (const review of reviews) {
+        total += review.rating ?? 0;
+      }
+      const average = total / reviews.length;
+      setAverage(average);
+      console.log(average);
+    }
+  }, [reviews]);
+
   if (loading) return null;
 
-  if (!description) {
+  if (!classInfo) {
     return <NotFoundPage />;
   }
 
@@ -61,7 +69,7 @@ export default function ClassReviewPage() {
           <div className="card" style={{ width: '20rem' }}>
             <div className="card-body">
               <h5 className="card-title text-center">{classId!.toUpperCase()}</h5>
-              <p className="card-text">{description}</p>
+              <p className="card-text">{classInfo.classDescription}</p>
             </div>
           </div>
         </div>
@@ -69,7 +77,9 @@ export default function ClassReviewPage() {
           <div className="card" style={{ width: '50rem' }}>
             <div className="card-header">{classId!.toUpperCase()}</div>
             <div className="card-body">
-              {/* Add overall rating here */}
+              <p><strong>Class Name:</strong> {classInfo.className}</p>
+              <p><strong>Credits:</strong> {classInfo.credits}</p>
+              <p><strong>Average Rating:</strong> {average.toFixed(1)}</p>
             </div>
           </div>
         </div>

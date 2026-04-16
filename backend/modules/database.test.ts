@@ -103,9 +103,9 @@ describe('verifyPassword', () => {
 
 describe('addReview / getReviews', () => {
   test('stores and retrieves reviews by classId', async () => {
-    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
-    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
-    await DB.addReview({ class: 'MATH200', name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'c@b.com' });
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com', rating: 4.5 });
+    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com', rating: 3 });
+    await DB.addReview({ class: 'MATH200', name: 'Carol', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'c@b.com', rating: 4 });
 
     const cs101Reviews = await DB.getReviews('CS101');
     expect(cs101Reviews).toHaveLength(2);
@@ -120,7 +120,7 @@ describe('addReview / getReviews', () => {
 
 describe('getReviewByID', () => {
   test('getReviewByID returns the correct review', async () => {
-    const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
+    const result = await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com', rating: 4.5 });
     const reviewId = result.insertedId.toString();
 
     const review = await DB.getReviewByID(reviewId);
@@ -137,9 +137,9 @@ describe('getReviewByID', () => {
 
 describe('getReviewsByEmail', () => {
   test('stores and retrieves reviews by email', async () => {
-    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
-    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com' });
-    await DB.addReview({ class: 'MATH200', name: 'Alice', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'a@b.com' });
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com', rating: 4.5 });
+    await DB.addReview({ class: 'CS101', name: 'Bob', grade: 'B', date: '1/2/2024', review: 'Okay.', email: 'b@b.com', rating: 3 });
+    await DB.addReview({ class: 'MATH200', name: 'Alice', grade: 'A-', date: '1/3/2024', review: 'Good.', email: 'a@b.com', rating: 4 });
 
     const aliceReviews = await DB.getReviewsByEmail('a@b.com');
     expect(aliceReviews).toHaveLength(2);
@@ -155,7 +155,7 @@ describe('getReviewsByEmail', () => {
 describe('deleteReview', () => {
   test('removes a single review by ID', async () => {
 
-    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com' });
+    await DB.addReview({ class: 'CS101', name: 'Alice', grade: 'A', date: '1/1/2024', review: 'Great!', email: 'a@b.com', rating: 4.5 });
     expect(await DB.getReviews('CS101')).toHaveLength(1);
     await DB.deleteReview('69a20f986c3637ee0c6282c2'); //has to be a valid ObjectId format
     console.log(await DB.getReviewByID('69a20f986c3637ee0c6282c2'));

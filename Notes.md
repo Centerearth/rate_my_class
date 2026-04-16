@@ -1,5 +1,4 @@
 Need more info about classes to auto-populate, need to seed database with some more classes. Do I want a rating system? I think so
-Submitting an invalid class review doesn't display an error message, it just auto redirects
 Add admin approval?
 Change into a search bar
 Add the whole error modal thing

@@ -20,6 +20,7 @@ export interface DBReview {
   class: string;
   review: string;
   email: string;
+  rating: number;
 }
 
 export interface DBClass {

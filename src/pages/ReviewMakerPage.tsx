@@ -10,6 +10,7 @@ export default function ReviewMakerPage() {
   const [grade, setGrade] = useState('A');
   const [classNum, setClassNum] = useState('');
   const [reviewContent, setReviewContent] = useState('');
+  const [rating, setRating] = useState(3);
   const [classes, setClasses] = useState<Class[]>([]);
 
   useEffect(() => {
@@ -33,8 +34,8 @@ export default function ReviewMakerPage() {
     try {
       const date = new Date().toLocaleDateString();
       const email = user.email;
-      const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email };
-      const reviews = await postReview(classNum, newReview);
+      const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email, rating: rating };
+      await postReview(classNum, newReview);
       navigate(`/${classNum}`);
     } catch (err: unknown) {
       setAddError(err instanceof Error ? err.message : 'Failed to save review');
@@ -100,6 +101,18 @@ export default function ReviewMakerPage() {
                     value={reviewContent}
                     onChange={(e) => setReviewContent(e.target.value)}
                     required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Rating: {rating} / 5</label>
+                  <input
+                    type="range"
+                    className="form-range"
+                    min={0}
+                    max={5}
+                    step={0.5}
+                    value={rating}
+                    onChange={(e) => setRating(Number(e.target.value))}
                   />
                 </div>
                 {addError && <div className="alert alert-danger">{addError}</div>}

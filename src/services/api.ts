@@ -11,6 +11,7 @@ export interface Review {
   class: string;
   review: string;
   email: string;
+  rating: number;
 }
 
 export interface Class {

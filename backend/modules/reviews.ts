@@ -23,11 +23,11 @@ const VALID_GRADES = new Set(['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+',
 
 // SubmitReview — requires auth (mounted behind secureApiRouter)
 secureRouter.post('/review/:class', async (req, res) => {
-  const { name, grade, date, review, email } = req.body;
+  const { name, grade, date, review, email, rating } = req.body;
   const classUsed = String(req.params['class']);
 
-  if (!name || !grade || !date || !review || !email) {
-    res.status(400).json({ msg: 'Missing required fields: name, grade, date, review, email' });
+  if (!name || !grade || !date || !review || !email || rating === undefined) {
+    res.status(400).json({ msg: 'Missing required fields: name, grade, date, review, email, rating' });
     return;
   }
 
@@ -41,7 +41,12 @@ secureRouter.post('/review/:class', async (req, res) => {
     return;
   }
 
-  await DB.addReview({ name, grade, date, class: classUsed, review, email });
+  if (typeof rating !== 'number' || rating < 0 || rating > 5 || (rating * 2) % 1 !== 0) {
+    res.status(400).json({ msg: 'Rating must be a number from 0 to 5 in 0.5 increments' });
+    return;
+  }
+
+  await DB.addReview({ name, grade, date, class: classUsed, review, email, rating });
   res.status(201).end();
 });
 

@@ -65,7 +65,7 @@ export default function AccountPage() {
                 <li key={review.date} className="list-group-item d-flex justify-content-between align-items-center">
                   <div>
                     <strong>{review.name}</strong> - {new Date(review.date).toLocaleDateString()}
-                    <p>Grade: {review.grade}, Class: {review.class.toLocaleUpperCase()}, Review: {review.review}</p>
+                    <p>Grade: {review.grade}, Rating: {review.rating?.toString() || 'N/A'}, Class: {review.class.toLocaleUpperCase()}, Review: {review.review}</p>
                   </div>
                   <button
                     className="btn btn-sm btn-outline-danger"

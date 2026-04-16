@@ -58,15 +58,31 @@ describe('POST /review/:class', () => {
     expect(res.status).toBe(400);
   });
 
+  it('test returns 400 when rating is out of range', async () => {
+    const res = await request(buildSecureApp())
+      .post('/api/review/test-class')
+      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com', rating: 6 });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('test returns 400 when rating is not a valid increment', async () => {
+    const res = await request(buildSecureApp())
+      .post('/api/review/test-class')
+      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com', rating: 3.3 });
+
+    expect(res.status).toBe(400);
+  });
+
   it('test creates a new review and returns 201', async () => {
     DB.addReview.mockResolvedValue({ acknowledged: true, insertedId: 'abc123' });
 
     const res = await request(buildSecureApp())
       .post('/api/review/test-class')
-      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' });
+      .send({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com', rating: 4.5 });
 
     expect(res.status).toBe(201);
-    expect(DB.addReview).toHaveBeenCalledWith({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com' });
+    expect(DB.addReview).toHaveBeenCalledWith({ name: 'Test User', grade: 'A', date: '2023-01-01', class: 'test-class', review: 'Great class!', email: 'a@b.com', rating: 4.5 });
   });
 });
 
