@@ -26,14 +26,20 @@ export default function ReviewMakerPage() {
   const [addError, setAddError] = useState('');
   const [addSuccess, setAddSuccess] = useState(false);
 
-  async function saveReview() {
-    if (!user) return;
-    const date = new Date().toLocaleDateString();
-    const email = user.email;
-    const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email };
-    const reviews = await postReview(classNum, newReview);
-    localStorage.setItem('reviews', JSON.stringify(reviews));
-    navigate(`/${classNum}`);
+  async function saveReview(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!classNum || !grade || !reviewContent || !user) return;
+    setAddError('');
+    try {
+      const date = new Date().toLocaleDateString();
+      const email = user.email;
+      const newReview = { name: user.name, grade, date, class: classNum, review: reviewContent, email };
+      const reviews = await postReview(classNum, newReview);
+      // localStorage.setItem('reviews', JSON.stringify(reviews));
+      navigate(`/${classNum}`);
+    } catch (err: unknown) {
+      setAddError(err instanceof Error ? err.message : 'Failed to save review');
+    }
   }
 
   async function handleAddClass(e: React.FormEvent<HTMLFormElement>) {
@@ -56,50 +62,50 @@ export default function ReviewMakerPage() {
     <Layout>
       <div className="row">
         <div className="col">
-          <hr style={{ visibility: 'hidden' }} />
-          <form id="reviewForm">
-            <div className="form-group">
-              <label htmlFor="gradeId">Please Select Your Grade</label>
-              <select className="form-control" id="gradeId" value={grade} onChange={(e) => setGrade(e.target.value)}>
-                <option>A</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B</option>
-                <option>B-</option>
-                <option>C+</option>
-                <option>C</option>
-                <option>C-</option>
-                <option>D+</option>
-                <option>D</option>
-                <option>D-</option>
-                <option>F</option>
-              </select>
+          <div className="card">
+            <div className="card-header">Submit a Review</div>
+            <div className="card-body">
+              <form id="reviewForm" onSubmit={saveReview}>
+                <div className="mb-3">
+                  <label className="form-label">Class</label>
+                  <select className="form-control" value={classNum} onChange={(e) => setClassNum(e.target.value)}>
+                    {classes.map((c) => (
+                      <option key={c.classId} value={c.classId}>{c.classId.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Grade</label>
+                  <select className="form-control" value={grade} onChange={(e) => setGrade(e.target.value)}>
+                    <option>A</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B</option>
+                    <option>B-</option>
+                    <option>C+</option>
+                    <option>C</option>
+                    <option>C-</option>
+                    <option>D+</option>
+                    <option>D</option>
+                    <option>D-</option>
+                    <option>F</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Review</label>
+                  <textarea
+                    className="form-control"
+                    rows={4}
+                    value={reviewContent}
+                    onChange={(e) => setReviewContent(e.target.value)}
+                    required
+                  />
+                </div>
+                {addError && <div className="alert alert-danger">{addError}</div>}
+                <button type="submit" className="btn btn-primary">Submit Review</button>
+              </form>
             </div>
-            <hr />
-            <div className="form-group">
-              <label htmlFor="classId">Please Select the Class</label>
-              <select className="form-control" id="classId" value={classNum} onChange={(e) => setClassNum(e.target.value)}>
-                {classes.map((c) => (
-                  <option key={c.classId} value={c.classId}>{c.classId.toUpperCase()}</option>
-                ))}
-              </select>
-            </div>
-            <hr />
-            <div className="form-group">
-              <label htmlFor="reviewId">Leave Your Review Here</label>
-              <textarea
-                className="form-control"
-                id="reviewId"
-                rows={4}
-                value={reviewContent}
-                onChange={(e) => setReviewContent(e.target.value)}
-              />
-            </div>
-            <hr />
-            <button type="button" className="btn btn-primary btn-block mb-4" onClick={saveReview}>
-              Submit
-            </button>
-          </form>
+          </div>
         </div>
 
         {user && (

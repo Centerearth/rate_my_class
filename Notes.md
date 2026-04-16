@@ -1,11 +1,10 @@
-Write unit tests for classes, Put classes and their descriptions in the backend, Implement ability to add a new class (where from?)
-Figure out lower case upper case stuff
-Change into a search bar
-Add the whole modal thing
+Need more info about classes to auto-populate, need to seed database with some more classes. Do I want a rating system? I think so
 Submitting an invalid class review doesn't display an error message, it just auto redirects
-Maybe add an overall rating?
-Make sure no ports are hardcoded
+Add admin approval?
+Change into a search bar
+Add the whole error modal thing
 Modernize the look, fix styling
+Make sure no ports are hardcoded
 Deploy?
 
 
@@ -25,26 +24,6 @@ Deploy?
 - Render the filtered results as a clickable list below the input (a simple unstyled `<ul>`). Clicking an entry navigates to `/:classNum`.
 - If the class list moves to the database (see item 6), fetch the full list once on mount and filter client-side, or debounce and call a `GET /api/classes?q=...` endpoint.
 
----
-
-### 6. Add More Classes & Allow Users to Submit New Classes
-
-**Problem:** Classes are hard-coded in `src/data/class-descriptions.json`. Adding a new class requires a code change and re-deploy.
-
-**Solution:**
-
-**Database migration:**
-- Create a new `classes` MongoDB collection with documents shaped as: `{ classId: "cs260", name: "Web Programming", description: "...", department: "CS", credits: 3 }`.
-- Seed the collection with the existing 15 entries from `class-descriptions.json`.
-- Add a `GET /api/classes` backend route that returns all class documents. The frontend fetches this on app load (or on `HomePage` mount) instead of importing the JSON file.
-
-**User-submitted classes:**
-- Add a `POST /api/classes` endpoint (protected — requires auth) that accepts `{ classId, name, description, department, credits }`.
-- On `HomePage`, show an "Add a class" button (visible only to logged-in users) that opens a modal or navigates to a `/add-class` page with a short form.
-- Validate that `classId` is unique before inserting. Return a helpful error if it already exists.
-- Consider a moderation flag (`approved: boolean`) so new classes appear only after an admin reviews them, preventing spam.
-
----
 
 ### 7. Modernize the UI / Fix Styling
 
@@ -61,7 +40,7 @@ Deploy?
 
 ---
 
-### 8. Write Unit Tests
+### 8. Write Frontend Unit Tests
 
 **Problem:** There are zero tests. Regressions are caught only by manual testing.
 
