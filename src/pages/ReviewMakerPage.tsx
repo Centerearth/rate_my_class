@@ -16,7 +16,6 @@ export default function ReviewMakerPage() {
   useEffect(() => {
     getClasses().then((data) => {
       setClasses(data);
-      if (data.length > 0) setClassNum(data[0].classId);
     }).catch(() => setClasses([]));
   }, []);
 
@@ -70,11 +69,19 @@ export default function ReviewMakerPage() {
               <form id="reviewForm" onSubmit={saveReview}>
                 <div className="mb-3">
                   <label className="form-label">Class</label>
-                  <select className="form-control" value={classNum} onChange={(e) => setClassNum(e.target.value)}>
+                  <input
+                    className="form-control"
+                    list="review-class-options"
+                    placeholder="Search for a class..."
+                    value={classNum}
+                    onChange={(e) => setClassNum(e.target.value.toLowerCase().trim())}
+                    required
+                  />
+                  <datalist id="review-class-options">
                     {classes.map((c) => (
-                      <option key={c.classId} value={c.classId}>{c.classId.toUpperCase()}</option>
+                      <option key={c.classId} value={c.classId.toUpperCase()} />
                     ))}
-                  </select>
+                  </datalist>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Grade</label>

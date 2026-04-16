@@ -5,7 +5,7 @@ import { getClasses, Class } from '../services/api';
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [selectedClass, setSelectedClass] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const [classes, setClasses] = useState<Class[]>([]);
 
   useEffect(() => {
@@ -13,8 +13,9 @@ export default function HomePage() {
   }, []);
 
   function goto() {
-    if (selectedClass) {
-      navigate(`/${selectedClass}`);
+    const match = classes.find(c => c.classId === inputValue.toLowerCase().trim());
+    if (match) {
+      navigate(`/${match.classId}`);
     }
   }
 
@@ -23,19 +24,23 @@ export default function HomePage() {
       <div id="index-main">
         <h1>Welcome!</h1>
         <p>Search for a class below</p>
-        <select
-          className="custom-select custom-select-lg mb-3"
-          id="classSelection"
-          onChange={(e) => setSelectedClass(e.target.value)}
-        >
-          <option value="">Class List</option>
-          {classes.map((c) => (
-            <option key={c.classId} value={c.classId}>{c.classId.toUpperCase()}</option>
-          ))}
-        </select>
-        <button type="button" className="btn btn-primary btn-block" onClick={goto}>
-          GO
-        </button>
+        <form onSubmit={(e) => { e.preventDefault(); goto(); }}>
+          <input
+            className="form-control form-control-lg mb-3"
+            list="class-options"
+            placeholder="Search for a class..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <datalist id="class-options">
+            {classes.map((c) => (
+              <option key={c.classId} value={c.classId.toLocaleUpperCase()} />
+            ))}
+          </datalist>
+          <button type="submit" className="btn btn-primary btn-block">
+            GO
+          </button>
+        </form>
       </div>
     </Layout>
   );

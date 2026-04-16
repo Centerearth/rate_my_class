@@ -1,5 +1,3 @@
-Need more info about classes to auto-populate, need to seed database with some more classes. Do I want a rating system? I think so
-Add admin approval?
 Change into a search bar
 Add the whole error modal thing
 Modernize the look, fix styling
