@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       { path: '/review-maker', element: <ReviewMakerPage /> },
     ],
   },
-  { path: '/:classNum', element: <ClassReviewPage /> },
+  { path: '/:classId', element: <ClassReviewPage /> },
   { path: '*', element: <NotFoundPage /> },
 ]);
 

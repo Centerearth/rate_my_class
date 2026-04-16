@@ -1,30 +1,40 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
-import classDescriptionsJson from '../data/class-descriptions.json';
 import NotFoundPage from './NotFoundPage';
-import { Review, getReviews } from '../services/api';
-import { useAuth } from '../context/AuthContext';
-
-const classDescriptions = classDescriptionsJson as Record<string, string>;
+import { Review, getClassByID, getReviews } from '../services/api';
 
 export default function ClassReviewPage() {
-  const { classNum } = useParams<{ classNum: string }>();
+  const { classId } = useParams<{ classId: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const description = classNum ? classDescriptions[classNum] : undefined;
-  const { user } = useAuth();
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
-    if (!classNum) return;
+    if (!classId) return;
+
+    async function loadClassDescription() {
+      try {
+        const response = await getClassByID(classId!);
+        setDescription(response.classDescription);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    loadClassDescription();
+  }, [classId]);
+
+  useEffect(() => {
+    if (!classId) return;
 
     async function loadReviews() {
       let reviewsData: Review[] = [];
       try {
-        reviewsData = await getReviews(classNum!); 
-        localStorage.setItem(`reviews-${classNum}`, JSON.stringify(reviewsData));
+        reviewsData = await getReviews(classId!); 
+        localStorage.setItem(`reviews-${classId}`, JSON.stringify(reviewsData));
       } catch (error) {
         console.log(error);
-        const reviewsText = localStorage.getItem(`reviews-${classNum}`);
+        const reviewsText = localStorage.getItem(`reviews-${classId}`);
         if (reviewsText) {
           reviewsData = JSON.parse(reviewsText);
         }
@@ -33,7 +43,7 @@ export default function ClassReviewPage() {
     }
 
     loadReviews();
-  }, [classNum]);
+  }, [classId]);
 
   if (!description) {
     return <NotFoundPage />;
@@ -45,14 +55,14 @@ export default function ClassReviewPage() {
         <div className="col">
           <div className="card" style={{ width: '20rem' }}>
             <div className="card-body">
-              <h5 className="card-title text-center">{classNum!.toUpperCase()}</h5>
+              <h5 className="card-title text-center">{classId!.toUpperCase()}</h5>
               <p className="card-text">{description}</p>
             </div>
           </div>
         </div>
         <div className="col">
           <div className="card" style={{ width: '50rem' }}>
-            <div className="card-header">{classNum!.toUpperCase()}</div>
+            <div className="card-header">{classId!.toUpperCase()}</div>
             <div className="card-body">
               {/* Add overall rating here */}
             </div>

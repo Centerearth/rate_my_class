@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import * as DB from './modules/database';
 import { router as authRouter, secureApiRouter } from './modules/auth';
 import { publicRouter as reviewsPublicRouter, secureRouter as reviewsSecureRouter } from './modules/reviews';
+import { publicRouter as classesPublicRouter, secureRouter as classesSecureRouter } from './modules/classes';
 
 const dbUser = process.env.MONGOUSER;
 const dbPassword = process.env.MONGOPASSWORD;
@@ -27,8 +28,10 @@ app.use(express.static('dist'));
 
 app.use('/api', authRouter);
 app.use('/api', reviewsPublicRouter);
+app.use('/api', classesPublicRouter);
 app.use('/api', secureApiRouter);
 secureApiRouter.use(reviewsSecureRouter);
+secureApiRouter.use(classesSecureRouter);
 
 app.use(function (err: Error, _req: Request, res: Response, _next: NextFunction) {
   res.status(500).send({ type: err.name, message: err.message });
