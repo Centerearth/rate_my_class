@@ -13,7 +13,7 @@ export default function AboutPage() {
     <Layout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '900px', width: '100%', padding: '2rem 1rem', textAlign: 'left' }}>
 
-        <div style={{ display: 'flex', gap: '1.25rem' }}>
+        <div className="two-col">
           <div className="card-hover" style={{ ...card, flex: 1 }}>
             <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>What is Rate My Class?</h2>
             <p style={{ color: 'var(--text-bright)', lineHeight: 1.75, margin: 0 }}>

@@ -102,7 +102,7 @@ export default function AccountPage() {
   return (
     <Layout>
       {modal && <ConfirmModal title={modal.title} message={modal.message} onConfirm={modal.onConfirm} onCancel={() => setModal(null)} />}
-      <div style={{ width: '100%', maxWidth: '800px', padding: '2.5rem 1.5rem', textAlign: 'left' }}>
+      <div className="page-col" style={{ maxWidth: '800px' }}>
         <h1 style={{ color: 'var(--text-primary)', marginBottom: '1.75rem' }}>Account</h1>
         {user && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

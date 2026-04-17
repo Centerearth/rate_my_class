@@ -25,7 +25,7 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '3rem', width: '100%', maxWidth: '1100px', padding: '0 2rem', textAlign: 'left' }}>
+      <div className="page-row">
         <div style={{ flex: 1 }}>
           <h1 style={{ fontSize: '2.8rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Welcome!</h1>
           <p style={{ color: 'var(--text-bright)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>Search for a class below</p>

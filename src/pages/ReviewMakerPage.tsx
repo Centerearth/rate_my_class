@@ -158,7 +158,7 @@ export default function ReviewMakerPage() {
 
   return (
     <Layout>
-      <div style={{ display: 'flex', gap: '1.5rem', width: '100%', maxWidth: '1000px', padding: '2rem 1.5rem', alignItems: 'flex-start', textAlign: 'left' }}>
+      <div className="two-col" style={{ maxWidth: '1000px', padding: '2rem 1.5rem', alignItems: 'flex-start', textAlign: 'left' }}>
 
         <div style={{ ...card, flex: 1 }}>
           <h4 style={{ color: 'var(--text-primary)', marginBottom: '1.25rem' }}>Submit a Review</h4>

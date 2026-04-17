@@ -71,7 +71,7 @@ export default function ClassReviewPage() {
 
   return (
     <Layout>
-      <div style={{ width: '100%', maxWidth: '900px', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', textAlign: 'left' }}>
+      <div className="page-col" style={{ maxWidth: '900px' }}>
 
         <div style={card}>
           <h2 style={{ color: 'var(--text-primary)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem' }}>
