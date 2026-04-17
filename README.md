@@ -60,9 +60,4 @@ npm start       # serves dist/ and the API on port 3000
 
 ## Deployment
 
-The app is deployed at [ratemyclass260.link](https://ratemyclass260.link). (not anymore, coming again soon!)
-
-To deploy to the production server:
-
-```bash
-./deployFiles.sh -k ~/Desktop/production.pem -h ratemyclass260.link -s startup
+The app is deployed at [ratemyclass.me](https://ratemyclass.me).
