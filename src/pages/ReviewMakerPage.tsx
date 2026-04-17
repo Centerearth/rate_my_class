@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import ClassSearch from '../components/ClassSearch';
+import StarRating from '../components/StarRating';
 import { postReview, addClass, getClasses, Class } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -50,40 +51,6 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '0.4rem',
   display: 'block',
 };
-
-function StarRating({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const [hovered, setHovered] = useState(0);
-  const display = hovered || value;
-
-  return (
-    <div style={{ display: 'flex', gap: '0.25rem' }}>
-      {[1, 2, 3, 4, 5].map((star) => {
-        const full = star <= display;
-        const half = !full && star - 0.5 <= display;
-        return (
-          <span key={star} style={{ position: 'relative', display: 'inline-block', fontSize: '1.75rem', userSelect: 'none' }}>
-            <span style={{ color: 'rgba(160, 195, 230, 0.25)' }}>★</span>
-            {(full || half) && (
-              <span style={{ position: 'absolute', left: 0, top: 0, width: full ? '100%' : '50%', overflow: 'hidden', color: '#f5c518' }}>★</span>
-            )}
-            <span
-              style={{ position: 'absolute', left: 0, top: 0, width: '50%', height: '100%', cursor: 'pointer' }}
-              onMouseEnter={() => setHovered(star - 0.5)}
-              onMouseLeave={() => setHovered(0)}
-              onClick={() => onChange(star - 0.5)}
-            />
-            <span
-              style={{ position: 'absolute', right: 0, top: 0, width: '50%', height: '100%', cursor: 'pointer' }}
-              onMouseEnter={() => setHovered(star)}
-              onMouseLeave={() => setHovered(0)}
-              onClick={() => onChange(star)}
-            />
-          </span>
-        );
-      })}
-    </div>
-  );
-}
 
 export default function ReviewMakerPage() {
   const navigate = useNavigate();
@@ -171,6 +138,7 @@ export default function ReviewMakerPage() {
                 value={classNum}
                 onChange={(v) => setClassNum(v.toLowerCase().trim())}
                 inputStyle={inputStyle}
+                required
               />
             </div>
             <div>

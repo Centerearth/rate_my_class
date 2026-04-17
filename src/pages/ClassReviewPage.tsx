@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import NotFoundPage from './NotFoundPage';
+import StarRating from '../components/StarRating';
 import { Review, Class, getClassByID, getReviews } from '../services/api';
 
 export default function ClassReviewPage() {
@@ -94,7 +95,7 @@ export default function ClassReviewPage() {
                     <strong style={{ color: 'var(--text-primary)' }}>{review.name}</strong>
                     <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{review.date}</span>
                     <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Grade: {review.grade}</span>
-                    <span style={{ color: '#f5c518', fontSize: '0.85rem' }}>{'★'.repeat(Math.floor(review.rating ?? 0))}{(review.rating ?? 0) % 1 ? '½' : ''} {review.rating ?? '—'}/5</span>
+                    <StarRating value={review.rating ?? 0} readOnly size="1rem" />
                   </div>
                   <p style={{ color: 'var(--text-bright)', margin: 0, lineHeight: 1.7 }}>{review.review}</p>
                 </div>

@@ -9,9 +9,10 @@ interface Props {
   onChange: (val: string) => void;
   inputStyle?: React.CSSProperties;
   placeholder?: string;
+  required?: boolean;
 }
 
-export default function ClassSearch({ classes, value, onChange, inputStyle, placeholder }: Props) {
+export default function ClassSearch({ classes, value, onChange, inputStyle, placeholder, required }: Props) {
   const [open, setOpen] = useState(false);
   const [activeIdx, setActiveIdx] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +70,7 @@ export default function ClassSearch({ classes, value, onChange, inputStyle, plac
         onKeyDown={onKeyDown}
         onFocus={() => filtered.length > 0 && setOpen(true)}
         autoComplete="off"
+        required={required}
         style={inputStyle}
       />
       {open && (

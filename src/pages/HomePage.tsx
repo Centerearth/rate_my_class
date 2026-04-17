@@ -37,6 +37,7 @@ export default function HomePage() {
                 value={inputValue}
                 onChange={(v) => { setInputValue(v); setNotFound(false); }}
                 inputStyle={{ background: 'rgba(0, 20, 60, 0.6)', border: '1px solid rgba(0, 90, 200, 0.35)', color: 'var(--text-primary)' }}
+                required
               />
               <button type="submit" style={{
                 background: 'linear-gradient(135deg, #0a4aab 0%, #1a6fd4 100%)',
