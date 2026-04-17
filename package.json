@@ -7,9 +7,12 @@
     "test": "jest --forceExit",
     "test:frontend": "jest --config jest.frontend.config.js --forceExit",
     "dev": "vite",
-    "build": "vite build",
+    "build:frontend": "vite build",
+    "build:backend": "tsc -p backend/tsconfig.json",
+    "build": "npm run build:frontend && npm run build:backend",
     "preview": "vite preview",
-    "start": "ts-node --project backend/tsconfig.json backend/index.ts"
+    "start": "node dist-server/index.js",
+    "dev:server": "ts-node --project backend/tsconfig.json backend/index.ts"
   },
   "repository": {
     "type": "git",

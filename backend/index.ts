@@ -16,7 +16,7 @@ if (!dbUser) {
 DB.connect(`mongodb+srv://${dbUser}:${dbPassword}@${dbHostname}`);
 
 const app = express();
-const port = process.argv.length > 2 ? Number(process.argv[2]) : 3000;
+const port = Number(process.env.PORT) || 3000;
 
 app.use((req: Request, _res: Response, next: NextFunction) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
