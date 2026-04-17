@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import ClassSearch from '../components/ClassSearch';
 import { getClasses, Class } from '../services/api';
 
 export default function HomePage() {
@@ -31,19 +32,12 @@ export default function HomePage() {
           <p style={{ color: 'var(--text-bright)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>Search for a class below</p>
           <form onSubmit={(e) => { e.preventDefault(); goto(); }}>
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-              <input
-                className="form-control form-control-lg"
-                list="class-options"
-                placeholder="Search for a class..."
+              <ClassSearch
+                classes={classes}
                 value={inputValue}
-                onChange={(e) => { setInputValue(e.target.value); setNotFound(false); }}
-                style={{ background: 'rgba(0, 20, 60, 0.6)', border: '1px solid rgba(0, 90, 200, 0.35)', color: 'var(--text-primary)' }}
+                onChange={(v) => { setInputValue(v); setNotFound(false); }}
+                inputStyle={{ background: 'rgba(0, 20, 60, 0.6)', border: '1px solid rgba(0, 90, 200, 0.35)', color: 'var(--text-primary)' }}
               />
-              <datalist id="class-options">
-                {classes.map((c) => (
-                  <option key={c.classId} value={c.classId.toLocaleUpperCase()} />
-                ))}
-              </datalist>
               <button type="submit" style={{
                 background: 'linear-gradient(135deg, #0a4aab 0%, #1a6fd4 100%)',
                 border: '1px solid rgba(0, 100, 220, 0.4)',

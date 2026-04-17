@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
+import ClassSearch from '../components/ClassSearch';
 import { postReview, addClass, getClasses, Class } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -165,19 +166,12 @@ export default function ReviewMakerPage() {
           <form onSubmit={saveReview} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label style={labelStyle}>Class</label>
-              <input
-                style={inputStyle}
-                list="review-class-options"
-                placeholder="Search for a class..."
+              <ClassSearch
+                classes={classes}
                 value={classNum}
-                onChange={(e) => setClassNum(e.target.value.toLowerCase().trim())}
-                required
+                onChange={(v) => setClassNum(v.toLowerCase().trim())}
+                inputStyle={inputStyle}
               />
-              <datalist id="review-class-options">
-                {classes.map((c) => (
-                  <option key={c.classId} value={c.classId.toUpperCase()} />
-                ))}
-              </datalist>
             </div>
             <div>
               <label style={labelStyle}>Grade</label>
