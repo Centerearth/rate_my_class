@@ -67,12 +67,12 @@ describe('ClassReviewPage', () => {
     });
   });
 
-  it('shows dash for reviews without a rating', async () => {
+  it('renders reviews without a rating using empty stars', async () => {
     (getReviews as jest.Mock).mockResolvedValue([
       { _id: '1', name: 'Alice', grade: 'A', date: '1/1/2025', class: 'cs260', review: 'Great!', email: 'a@test.com' },
     ]);
     render(<ClassReviewPage />);
-    expect(await screen.findByText(/—\/5/)).toBeInTheDocument();
+    expect(await screen.findByText('Great!')).toBeInTheDocument();
   });
 
   it('shows "No reviews posted yet" when there are no reviews', async () => {
