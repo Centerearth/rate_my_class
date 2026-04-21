@@ -33,7 +33,7 @@ export default function AboutPage() {
           <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>About the project</h2>
           <p style={{ color: 'var(--text-bright)', lineHeight: 1.75, margin: 0 }}>
             Rate My Class is authored and maintained by <strong style={{ color: 'var(--text-primary)' }}>Andrew Nicholls</strong> (2026).
-            View the source on <a href="https://github.com/Centerearth/startup" style={{ color: 'var(--accent)' }}>GitHub</a> or visit the <a href="ratemyclass260.link" style={{ color: 'var(--accent)' }}>project homepage</a>.
+            View the source on <a href="https://github.com/Centerearth/startup" style={{ color: 'var(--accent)' }}>GitHub</a>.
           </p>
         </div>
 
